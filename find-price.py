@@ -3,7 +3,8 @@ import re
 from bs4 import BeautifulSoup
 from selenium import webdriver
 
-class Makemytrip():
+
+def find_price():
 
     driver = webdriver.Chrome(r"C:\Users\Akshat Malik\Downloads\chromedriver_win32\chromedriver.exe")
     driver.get('https://flights.makemytrip.com/makemytrip//search/O/O/E/1/0/0/S/V0/BLR_IXC_01-11-2018')
@@ -12,7 +13,6 @@ class Makemytrip():
     price_list = driver.find_elements_by_class_name("price_info")
     type_of_flight = driver.find_elements_by_class_name("airline_info_detls")
 
-    find_price
     for i in range(len(price_list)):
         price = re.findall(r'\d+',price_list[i].get_attribute('innerHTML').replace(",", ""))[0]
         start_time = re.findall(r'\d+\w', time[i].get_attribute('innerHTML'))
@@ -26,4 +26,5 @@ class Makemytrip():
             "duration" : duration,
             "flight_id" : flight_id
         })
-        print(list_of_price[-1])
+
+        return find_price
