@@ -1,15 +1,23 @@
 import requests
 from pprint import pprint
+from datetime import datetime
 
 
-def find_price():
+def _format_date(start_date):
+    date_str = f"{start_date.year}{start_date.month}{start_date.day}"
+    return date_str
+
+def find_price(start_date, start_location, end_location):
+
+    start_date = _format_date(start_date)
+
     params = (
         ('app_id', '41d6cc11'),
         ('app_key', '3d7e4932f6c586bc48346cb19c0587be'),
         ('format', 'json'),
-        ('source', 'BLR'),
-        ('destination', 'IXC'),
-        ('dateofdeparture', '20181102'),
+        ('source', f"{start_location}"),
+        ('destination', f"{end_location}"),
+        ('dateofdeparture', f'{start_date}'),
         ('seatingclass', 'E'),
         ('adults', '1'),
         ('children', '0'),
@@ -22,7 +30,6 @@ def find_price():
     go_ibibo = list()
 
     for flight in flight_data:
-    #     pprint(flight)
         flight_id = flight['airline']
         start_time = flight['deptime']
         end_time = flight["arrtime"]
@@ -36,6 +43,6 @@ def find_price():
             "flight_id" : flight_id,
             "site" : "goibibo"
         })
-    #     print(go_ibibo[-1])
+
     go_ibibo = sorted(go_ibibo, key=lambda k: k['price'])
-    pprint(go_ibibo)
+    return go_ibibo
