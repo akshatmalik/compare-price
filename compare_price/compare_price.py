@@ -21,13 +21,13 @@ class FindLowestPrice:
     def find_lowest_price(self):
 
         start_price_list = self._get_price_list(self.start_date)
-        start_price_list = sorted(start_price_list, key=lambda k: k['price'])
+        start_price_list = sorted(start_price_list, key=lambda k: int(k['price']))
 
         if self.end_date is None:
             return start_price_list, None
 
         end_price_list = self._get_price_list(self.end_date)
-        end_price_list = sorted(end_price_list, key=lambda k: k['price'])
+        end_price_list = sorted(end_price_list, key=lambda k: int(k['price']))
 
         return start_price_list, end_price_list
 
@@ -40,7 +40,7 @@ if __name__ == "__main__":
                                 start_location="IXC", end_location="BLR")
     start_price_list, end_price_list = price_obj.find_lowest_price()
     pprint("Start")
-    pprint(start_price_list[0:10])
+    pprint(start_price_list[0:2])
     pprint("*"*60)
-    pprint(end_price_list[0:10])
+    pprint(end_price_list[0:2])
     print("help")

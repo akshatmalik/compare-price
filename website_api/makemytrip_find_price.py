@@ -21,7 +21,7 @@ def find_price(start_date, start_location, end_location):
     price_list = driver.find_elements_by_class_name("price_info")
     type_of_flight = driver.find_elements_by_class_name("airline_info_detls")
 
-    for i in range(len(price_list)):
+    for i in range(min(len(price_list), len(time))):
         price = re.findall(r'\d+', price_list[i].get_attribute('innerHTML').replace(",", ""))[0]
         start_time = re.findall(r'\d+\w', time[3*i].get_attribute('innerHTML'))
         end_time = re.findall(r'\d+\w', time[3*i + 1].get_attribute('innerHTML'))
