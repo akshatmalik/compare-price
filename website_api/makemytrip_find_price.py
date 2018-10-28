@@ -2,14 +2,38 @@ import re
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from datetime import datetime
+
 
 def _format_date(start_date):
     date_str = f"{start_date.day}-{start_date.month}-{start_date.year}"
     return date_str
 
 
+def _format_price(price):
+    return price
+
+
+def _format_time(time):
+    return time
+
+
+def _format_duration(time):
+    time[0] = time[0].replace("h", "")
+    time[1] = time[1].replace("m", "")
+    return time
+
+
+def _format_flight_id(id):
+    return id[0]
+
+
 def find_price(start_date, start_location, end_location):
+    # 'price': '4185',
+    # 'start_time': ['12', '55'],
+    # 'end_time': ['15', '50'],
+    # 'duration': ['2h', '55m'],
+    # 'flight_id': ['AirAsia'],
+    # 'site': 'makemytrip
 
     start_date =_format_date(start_date)
 
@@ -28,11 +52,11 @@ def find_price(start_date, start_location, end_location):
         duration = re.findall(r'\d+\w', time[3*i + 2].get_attribute('innerHTML'))
         flight_id = BeautifulSoup(type_of_flight[i].get_attribute('innerHTML'), 'html.parser').span.contents
         list_of_price.append({
-            "price": price,
-            "start_time": start_time,
-            "end_time": end_time,
-            "duration": duration,
-            "flight_id": flight_id
+            "price": _format_price(price),
+            "start_time": _format_time(start_time),
+            "end_time": _format_time(end_time),
+            "duration": _format_duration(duration),
+            "flight_id": _format_flight_id(flight_id)
         })
 
     driver.close()
