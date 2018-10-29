@@ -44,6 +44,7 @@ def find_price(start_date, start_location, end_location):
     time = driver.find_elements_by_class_name("timeCa")
     price_list = driver.find_elements_by_class_name("price_info")
     type_of_flight = driver.find_elements_by_class_name("airline_info_detls")
+    site_name = "makemytrip"
 
     for i in range(min(len(price_list), len(time))):
         price = re.findall(r'\d+', price_list[i].get_attribute('innerHTML').replace(",", ""))[0]
@@ -51,12 +52,14 @@ def find_price(start_date, start_location, end_location):
         end_time = re.findall(r'\d+\w', time[3*i + 1].get_attribute('innerHTML'))
         duration = re.findall(r'\d+\w', time[3*i + 2].get_attribute('innerHTML'))
         flight_id = BeautifulSoup(type_of_flight[i].get_attribute('innerHTML'), 'html.parser').span.contents
+
         list_of_price.append({
             "price": _format_price(price),
             "start_time": _format_time(start_time),
             "end_time": _format_time(end_time),
             "duration": _format_duration(duration),
-            "flight_id": _format_flight_id(flight_id)
+            "flight_id": _format_flight_id(flight_id),
+            "site": site_name
         })
 
     driver.close()

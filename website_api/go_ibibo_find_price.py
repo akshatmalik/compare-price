@@ -1,6 +1,4 @@
 import requests
-from pprint import pprint
-from datetime import datetime
 
 
 def _format_date(start_date):
