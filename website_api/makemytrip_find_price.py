@@ -2,7 +2,8 @@ import re
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
-
+import requests
+import zipfile
 
 def _format_date(start_date):
     date_str = f"{start_date.day}-{start_date.month}-{start_date.year}"
@@ -35,9 +36,26 @@ def find_price(start_date, start_location, end_location):
     # 'flight_id': ['AirAsia'],
     # 'site': 'makemytrip
 
+    def download_file(url, file_name):
+        local_filename = file_name
+        # NOTE the stream=True parameter
+        r = requests.get(url, stream=True)
+        with open(local_filename, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=1024):
+                if chunk:  # filter out keep-alive new chunks
+                    f.write(chunk)
+                    # f.flush() commented by recommendation from J.F.Sebastian
+        return local_filename
+
+    file_name = download_file("https://chromedriver.storage.googleapis.com/2.43/chromedriver_win32.zip", "chrome_driver.exe")
+
+    zip_ref = zipfile.ZipFile(file_name, 'r')
+    zip_ref.extractall(r"C:\Users\Akshat Malik\Downloads\demo")
+    zip_ref.close()
+    file_name = r"C:\Users\Akshat Malik\Downloads\demo\chromedriver.exe"
     start_date =_format_date(start_date)
 
-    driver = webdriver.Chrome(r"C:\Users\Akshat Malik\Downloads\chromedriver_win32\chromedriver.exe")
+    driver = webdriver.Chrome(file_name)
     driver.get(f'https://flights.makemytrip.com/makemytrip//search/O/O/E/1/0/0/S/V0/{start_location}_{end_location}_'
                f'{start_date}')
     list_of_price = list()
