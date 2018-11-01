@@ -13,8 +13,8 @@ class FindLowestPrice:
 
     def _get_price_list(self, date):
         results = []
-        results.extend(go_ibibo_find_price.find_price(date, self.start_location, self.end_location))
-        results.extend(makemytrip_find_price.find_price(date, self.start_location, self.end_location))
+        results.extend(go_ibibo_find_price.GoIbibo().find_price(date, self.start_location, self.end_location))
+        results.extend(makemytrip_find_price.MakeMyTrip().find_price(date, self.start_location, self.end_location))
         return results
 
     def _filter_by_time(self, start_price_list, start_time, end_time):

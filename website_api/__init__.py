@@ -6,7 +6,6 @@ class Website(abc.ABC):
     def __init__(self):
         self._setup()
 
-    @property
     @abc.abstractmethod
     def website_name(self):
         pass
@@ -44,7 +43,7 @@ class Website(abc.ABC):
             result["end_time"] = self._format_time(result["end_time"])
             result["duration"] = self._format_duration(result["duration"])
             result["flight_id"] = self._format_flight_id(result["flight_id"])
-            result["site"] = self.website_name
+            result["site"] = self.website_name()
 
         results = sorted(results, key=lambda k: k['price'])
         return results
@@ -52,3 +51,5 @@ class Website(abc.ABC):
     @abc.abstractmethod
     def _find_price(self, start_date, start_location, end_location):
         pass
+
+
