@@ -1,5 +1,7 @@
 import requests
+
 from . import Website
+
 
 class GoIbibo(Website):
 

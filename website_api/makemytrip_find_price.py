@@ -1,13 +1,15 @@
+import os
+import pathlib
 import re
+import zipfile
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
-import zipfile
+from selenium.webdriver.chrome.options import Options
+
 import helper_methods
 from . import Website
 
-import os
-import pathlib
 
 class MakeMyTrip(Website):
 
@@ -56,7 +58,10 @@ class MakeMyTrip(Website):
 
         start_date = self._format_date(start_date)
 
-        driver = webdriver.Chrome(file_name)
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+
+        driver = webdriver.Chrome(executable_path=file_name, chrome_options=chrome_options)
         driver.get(
             f'https://flights.makemytrip.com/makemytrip//search/O/O/E/1/0/0/S/V0/{start_location}_{end_location}_'
             f'{start_date}')
