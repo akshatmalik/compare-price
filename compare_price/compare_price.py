@@ -69,10 +69,11 @@ class FindLowestPrice:
 if __name__ == "__main__":
     # price_obj = FindLowestPrice(start_date=datetime.date(2018, 11, 11), end_date=datetime.date(2018, 11, 15),
     #                             start_location="IXC", end_location="BLR")
-    price_obj = FindLowestPrice(start_date=datetime.date(2018, 11, 11), end_date=None,
-                                start_location="IXC", end_location="BLR")
     # start_price_list, end_price_list = price_obj.find_flight_in_time_range(([10, 15], [17, 59]),
     #                                                                        ([10, 15], [14, 59]))
+
+    price_obj = FindLowestPrice(start_date=datetime.date(2018, 11, 11), end_date=None,
+                                start_location="IXC", end_location="BLR")
     start_price_list, end_price_list = price_obj.find_flight_in_time_range(([10, 15], [17, 59]),
                                                                            None)
     pprint("Start")
