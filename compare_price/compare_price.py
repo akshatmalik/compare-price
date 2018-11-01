@@ -1,6 +1,6 @@
+from __future__ import print_function, unicode_literals
 import datetime
 from pprint import pprint
-
 from website_api import go_ibibo_find_price, makemytrip_find_price
 
 
@@ -67,10 +67,10 @@ class FindLowestPrice:
 
 
 if __name__ == "__main__":
-    # price_obj = FindLowestPrice(start_date=datetime.date(2018, 11, 11), end_date=datetime.date(2018, 11, 15),
-    #                             start_location="IXC", end_location="BLR")
-    # start_price_list, end_price_list = price_obj.find_flight_in_time_range(([10, 15], [17, 59]),
-    #                                                                        ([10, 15], [14, 59]))
+    price_obj = FindLowestPrice(start_date=datetime.date(2018, 11, 11), end_date=datetime.date(2018, 11, 15),
+                                start_location="IXC", end_location="BLR")
+    start_price_list, end_price_list = price_obj.find_flight_in_time_range(([10, 15], [17, 59]),
+                                                                           ([10, 15], [14, 59]))
 
     price_obj = FindLowestPrice(start_date=datetime.date(2018, 11, 11), end_date=None,
                                 start_location="IXC", end_location="BLR")
@@ -82,3 +82,16 @@ if __name__ == "__main__":
         pprint("*"*60)
         pprint(end_price_list[0:2])
     print("help")
+
+    # from PyInquirer import prompt, print_json
+    #
+    # questions = [
+    #     {
+    #         'type': 'input',
+    #         'name': 'first_name',
+    #         'message': 'What\'s your first name',
+    #     }
+    # ]
+    #
+    # answers = prompt(questions)
+    # print_json(answers)
