@@ -1,5 +1,21 @@
+import sys, os
+import os
+import sys
+import sys
+sys.path.insert(0, r"C:\Users\Akshat Malik\PycharmProjects\find_cheapest_flight")
+file_dir = os.path.dirname(__file__)
+sys.path.append(file_dir)
+
+sys.path.append(r"C:\Users\Akshat Malik\PycharmProjects\find_cheapest_flight")
+sys.path.append(r"C:\Users\Akshat Malik\PycharmProjects")
+sys.path.append(r"C:\Users\Akshat Malik\PycharmProjects\find_cheapest_flight\website_api")
+sys.path.append(r"C:\Users\Akshat Malik\PycharmProjects\find_cheapest_flight\compare_price")
+sys.path.append(r"C:\Users\Akshat Malik\PycharmProjects\find_cheapest_flight\venv")
+
 import requests
+
 from . import Website
+
 
 class GoIbibo(Website):
 
