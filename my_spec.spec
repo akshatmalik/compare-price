@@ -1,0 +1,13 @@
+block_cipher = None
+a = Analysis(['C:\\Users\\Akshat Malik\\PycharmProjects\\find_cheapest_flight\\compare_price\\compare_price.py'],
+     binaries=None,
+     datas=[ ("C:\\Users\\Akshat Malik\\PycharmProjects\\find_cheapest_flight\\chromedriver.exe", ".") ] ,
+     hiddenimports=[],
+     hookspath=None,
+     runtime_hooks=None,
+     excludes=None,
+     cipher=block_cipher)
+pyz = PYZ(a.pure, a.zipped_data,
+     cipher=block_cipher)
+exe = EXE(pyz )
+coll = COLLECT()
