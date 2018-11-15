@@ -1,13 +1,14 @@
+import os
+import pathlib
 import re
+import zipfile
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
-import zipfile
+from selenium.webdriver.chrome.options import Options
 import helper_methods
 from . import Website
 
-import os
-import pathlib
 
 class MakeMyTrip(Website):
 
@@ -34,12 +35,23 @@ class MakeMyTrip(Website):
         dir_path = pathlib.Path(str(dir_path))
 
         url = "https://chromedriver.storage.googleapis.com/2.43/chromedriver_win32.zip"
-        file_path = dir_path / f"chrome_driver.exe"
-        file_path = helper_methods.download_file(url, file_path)
+        file_path = dir_path / f"chrome_driver_download.zip"
 
-        zip_ref = zipfile.ZipFile(file_path, 'r')
-        zip_ref.extractall(dir_path)
-        zip_ref.close()
+        if file_path.exists() == False:
+            print(f"{file_path} does not exist!")
+            os.makedirs(dir_path)
+            file_path = helper_methods.download_file(url, file_path)
+        else:
+            print(f"{file_path} does exist!")
+
+        if pathlib.Path(dir_path / "chrome_driver_download").exists() == False:
+            print(f"{pathlib.Path(dir_path / 'chrome_driver_download')} does exists")
+            zip_ref = zipfile.ZipFile(file_path, 'r')
+            zip_ref.extractall(dir_path / "chrome_driver_download")
+            zip_ref.close()
+        else:
+            print(f"{pathlib.Path(dir_path / 'chrome_driver_download')} exists")
+
 
     def website_name(self):
         return "MakeMyTrip"
@@ -51,12 +63,18 @@ class MakeMyTrip(Website):
         # 'price': 53660,
         # 'site': 'goibibo',
         # 'start_time': '22:50'
-
-        file_name = r"C:\Users\Akshat Malik\Downloads\demo\chromedriver.exe"
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        dir_path = pathlib.Path(str(dir_path))
+        print(f"{dir_path} in makemytrip")
+        file_name = dir_path / "chrome_driver_download" / f"chromedriver.exe"
+        # file_name = f"chromedriver.exe"
 
         start_date = self._format_date(start_date)
 
-        driver = webdriver.Chrome(file_name)
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+
+        driver = webdriver.Chrome(executable_path= str(file_name), chrome_options=chrome_options)
         driver.get(
             f'https://flights.makemytrip.com/makemytrip//search/O/O/E/1/0/0/S/V0/{start_location}_{end_location}_'
             f'{start_date}')
