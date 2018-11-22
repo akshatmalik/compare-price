@@ -81,6 +81,9 @@ class FindLowestPrice:
 
 
 if __name__ == "__main__":
+    import logging
+    logger = logging.getLogger()
+    logger.setLevel(logging.ERROR)
     # price_obj = FindLowestPrice(start_date=datetime.date(2018, 11, 11), end_date=datetime.date(2018, 11, 15),
     #                             start_location="DEL", end_location="BLR")
     # start_price_list, end_price_list = price_obj.find_flight_in_time_range(([10, 15], [17, 59]),
@@ -97,74 +100,75 @@ if __name__ == "__main__":
     #     pprint(end_price_list[0:2])
     # print("help")
     #
-    from PyInquirer import prompt, print_json
 
-    questions = [
-        {
-            'type': 'input',
-            'name': 'dummy',
-            'message': "Welcome to Compare Price!\n Lets get started? (Press Enter to begin)",
-        },
-        {
-            "type": "list",
-            "name": "start_location",
-            "message": "Where is your trip starting from? ",
-            "choices": [
-                "Bangalore", "Chandigarh", "Patna", "Delhi",
-            ],
-        },
-        {
-            "type": "list",
-            "name": "end_location",
-            "message": "Where is your trip ending at? ",
-            "choices": [
-                "Bangalore", "Chandigarh", "Patna", "Delhi",
-            ],
-        },
-        {
-            "type": "confirm",
-            "name": "return_journey",
-            "message": "Is this a one way trip? ",
-            'default': True,
-        },
-        {
-            'type': 'input',
-            'name': 'start_date',
-            'message': "Which day you want to book your flight? (follow this format please : YYYY/MM/DD)",
-        },
-        {
-            'type': 'input',
-            'name': 'start_date_time',
-            'message': "Between what time do you want your flight to be? (follow this format please : HH:MM, HH:MM )",
-        },
-        {
-            'type': 'input',
-            'name': 'end_date',
-            'message': "Which day you want to book your flight? (follow this format please : YYYY/MM/DD)",
-            "when" : lambda answers: answers["return_journey"]
-        },
-        {
-            'type': 'input',
-            'name': 'end_date_time',
-            'message': "Between what time do you want your flight to be? (follow this format please : HH:MM, HH:MM )",
-            "when" : lambda answers: answers["return_journey"]
-        }
-
-    ]
-
-    answers = prompt(questions)
+    # from PyInquirer import prompt, print_json
+    #
+    # questions = [
+    #     {
+    #         'type': 'input',
+    #         'name': 'dummy',
+    #         'message': "Welcome to Compare Price!\n Lets get started? (Press Enter to begin)",
+    #     },
+    #     {
+    #         "type": "list",
+    #         "name": "start_location",
+    #         "message": "Where is your trip starting from? ",
+    #         "choices": [
+    #             "Bangalore", "Chandigarh", "Patna", "Delhi",
+    #         ],
+    #     },
+    #     {
+    #         "type": "list",
+    #         "name": "end_location",
+    #         "message": "Where is your trip ending at? ",
+    #         "choices": [
+    #             "Bangalore", "Chandigarh", "Patna", "Delhi",
+    #         ],
+    #     },
+    #     {
+    #         "type": "confirm",
+    #         "name": "return_journey",
+    #         "message": "Is this a one way trip? ",
+    #         'default': True,
+    #     },
+    #     {
+    #         'type': 'input',
+    #         'name': 'start_date',
+    #         'message': "Which day you want to book your flight? (follow this format please : YYYY/MM/DD)",
+    #     },
+    #     {
+    #         'type': 'input',
+    #         'name': 'start_date_time',
+    #         'message': "Between what time do you want your flight to be? (follow this format please : HH:MM, HH:MM )",
+    #     },
+    #     {
+    #         'type': 'input',
+    #         'name': 'end_date',
+    #         'message': "Which day you want to book your flight? (follow this format please : YYYY/MM/DD)",
+    #         "when" : lambda answers: answers["return_journey"]
+    #     },
+    #     {
+    #         'type': 'input',
+    #         'name': 'end_date_time',
+    #         'message': "Between what time do you want your flight to be? (follow this format please : HH:MM, HH:MM )",
+    #         "when" : lambda answers: answers["return_journey"]
+    #     }
+    #
+    # ]
+    #
+    # answers = prompt(questions)
 
     answers = {
         "start_location" : "Chandigarh",
         "end_location" : "Bangalore",
-        "start_date" : "2018/11/15",
-        "start_date_time" : "14:00, 19:00",
-        "end_date" : "2018/11/23",
-        "end_date_time" : "14:00, 19:00",
+        "start_date" : "2018/12/20",
+        "start_date_time" : "14:00, 23:00",
+        "end_date" : "2018/12/23",
+        "end_date_time" : "14:00, 23:00",
 
     }
     try:
-        pprint(answers)
+        # pprint(answers)
 
 
         def get_date(date):
@@ -202,12 +206,22 @@ if __name__ == "__main__":
         start_price_list, end_price_list = price_obj.find_flight_in_time_range((start_date_start_time, start_date_end_time),
                                                                                (end_date_start_time, end_date_end_time))
 
+        # pprint(start_price_list[0:3])
 
-        pprint("Start")
-        pprint(start_price_list[0:3])
+        # TODO: Have to see why the prettifying output step is failing. the dict format is wrong
+        def print_price(price_list):
+            for price in price_list:
+                def get_time_str(time):
+                    return f"{time[0]}h {time[1]}m"
+                pprint(f"Start time: {get_time_str(price['start_time'])}  Duration: {get_time_str(price['duration'])}  End Time: {get_time_str(price['end_time'])}  Price: {price['price']}  Flight ID : {price['flight_id']}  Site: {price['site']}")
+
+
+
+        pprint("Cheapest start price is -> ")
+        print_price(start_price_list[0:3])
         if end_price_list is not None:
             pprint("*"*60)
-            pprint(end_price_list[0:3])
+            print_price(end_price_list[0:3])
         print("help")
     except Exception as e:
         import traceback
