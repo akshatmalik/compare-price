@@ -79,6 +79,23 @@ class FindLowestPrice:
 
         return start_price_list, end_price_list
 
+    def find_time_in_duration(self, start_date_time, start_date_duration, end_date_time, end_date_duration):
+
+        start_date_start_time = [0,0]
+        start_date_start_time[0] = start_date_time[0] + start_date_duration[0]
+        start_date_start_time[1] = start_date_time[1] + start_date_duration[1]
+
+        end_date_start_time = [0,0]
+        end_date_start_time[0] = end_date_time[0] + end_date_duration[0]
+        end_date_start_time[1] = end_date_time[1] + end_date_duration[1]
+
+        # pprint(start_date_start_time)
+        # pprint(end_date_start_time)
+
+        return self.find_flight_in_time_range( (start_date_time, start_date_start_time), (end_date_time, end_date_start_time))
+
+    # TODO: Verify how the find_flight_in_time_range work with start_date_time
+    # TODO: Allow to search with duration
 
 if __name__ == "__main__":
     import logging
@@ -161,9 +178,9 @@ if __name__ == "__main__":
     answers = {
         "start_location" : "Chandigarh",
         "end_location" : "Bangalore",
-        "start_date" : "2018/12/20",
+        "start_date" : "2018/12/21",
         "start_date_time" : "14:00, 23:00",
-        "end_date" : "2018/12/23",
+        "end_date" : "2018/12/25",
         "end_date_time" : "14:00, 23:00",
 
     }
@@ -203,8 +220,10 @@ if __name__ == "__main__":
 
         price_obj = FindLowestPrice(start_date=start_date, end_date=end_date,
                                     start_location=start_location, end_location=end_location)
-        start_price_list, end_price_list = price_obj.find_flight_in_time_range((start_date_start_time, start_date_end_time),
-                                                                               (end_date_start_time, end_date_end_time))
+        # start_price_list, end_price_list = price_obj.find_flight_in_time_range((start_date_start_time, start_date_end_time),
+        #                                                                        (end_date_start_time, end_date_end_time))
+
+        start_price_list, end_price_list = price_obj.find_time_in_duration((1,20), (22,0), (4,20), (19,0))
 
         # pprint(start_price_list[0:3])
 
