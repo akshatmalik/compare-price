@@ -118,72 +118,74 @@ if __name__ == "__main__":
     # print("help")
     #
 
-    # from PyInquirer import prompt, print_json
-    #
-    # questions = [
-    #     {
-    #         'type': 'input',
-    #         'name': 'dummy',
-    #         'message': "Welcome to Compare Price!\n Lets get started? (Press Enter to begin)",
-    #     },
-    #     {
-    #         "type": "list",
-    #         "name": "start_location",
-    #         "message": "Where is your trip starting from? ",
-    #         "choices": [
-    #             "Bangalore", "Chandigarh", "Patna", "Delhi",
-    #         ],
-    #     },
-    #     {
-    #         "type": "list",
-    #         "name": "end_location",
-    #         "message": "Where is your trip ending at? ",
-    #         "choices": [
-    #             "Bangalore", "Chandigarh", "Patna", "Delhi",
-    #         ],
-    #     },
-    #     {
-    #         "type": "confirm",
-    #         "name": "return_journey",
-    #         "message": "Is this a one way trip? ",
-    #         'default': True,
-    #     },
-    #     {
-    #         'type': 'input',
-    #         'name': 'start_date',
-    #         'message': "Which day you want to book your flight? (follow this format please : YYYY/MM/DD)",
-    #     },
-    #     {
-    #         'type': 'input',
-    #         'name': 'start_date_time',
-    #         'message': "Between what time do you want your flight to be? (follow this format please : HH:MM, HH:MM )",
-    #     },
-    #     {
-    #         'type': 'input',
-    #         'name': 'end_date',
-    #         'message': "Which day you want to book your flight? (follow this format please : YYYY/MM/DD)",
-    #         "when" : lambda answers: answers["return_journey"]
-    #     },
-    #     {
-    #         'type': 'input',
-    #         'name': 'end_date_time',
-    #         'message': "Between what time do you want your flight to be? (follow this format please : HH:MM, HH:MM )",
-    #         "when" : lambda answers: answers["return_journey"]
-    #     }
-    #
-    # ]
-    #
-    # answers = prompt(questions)
+    from PyInquirer import prompt, print_json
 
-    answers = {
-        "start_location" : "Chandigarh",
-        "end_location" : "Bangalore",
-        "start_date" : "2018/12/21",
-        "start_date_time" : "14:00, 23:00",
-        "end_date" : "2018/12/25",
-        "end_date_time" : "14:00, 23:00",
+    questions = [
+        {
+            'type': 'input',
+            'name': 'dummy',
+            'message': "Welcome to Compare Price!\n Lets get started? (Press Enter to begin)",
+        },
+        {
+            "type": "list",
+            "name": "start_location",
+            "message": "Where is your trip starting from? ",
+            "choices": [
+                "Bangalore", "Chandigarh", "Patna", "Delhi",
+            ],
+        },
+        {
+            "type": "list",
+            "name": "end_location",
+            "message": "Where is your trip ending at? ",
+            "choices": [
+                "Bangalore", "Chandigarh", "Patna", "Delhi",
+            ],
+        },
+        {
+            "type": "confirm",
+            "name": "return_journey",
+            "message": "Is this a one way trip? ",
+            'default': True,
+        },
+        {
+            'type': 'input',
+            'name': 'start_date',
+            'message': "Which day you want to book your flight? (follow this format please : YYYY/MM/DD)",
+        },
+        {
+            'type': 'input',
+            'name': 'start_date_time',
+            'message': "Between what time do you want your flight to be? (follow this format please : HH:MM, HH:MM )",
+        },
+        {
+            'type': 'input',
+            'name': 'end_date',
+            'message': "Which day you want to book your flight? (follow this format please : YYYY/MM/DD)",
+            "when" : lambda answers: answers["return_journey"]
+        },
+        {
+            'type': 'input',
+            'name': 'end_date_time',
+            'message': "Between what time do you want your flight to be? (follow this format please : HH:MM, HH:MM )",
+            "when" : lambda answers: answers["return_journey"]
+        }
 
-    }
+    ]
+
+    answers = prompt(questions)
+    #  pyinstaller --onefile compare_price\compare_price.py
+
+
+    # answers = {
+    #     "start_location" : "Chandigarh",
+    #     "end_location" : "Bangalore",
+    #     "start_date" : "2018/12/21",
+    #     "start_date_time" : "14:00, 23:00",
+    #     "end_date" : "2018/12/25",
+    #     "end_date_time" : "14:00, 23:00",
+    #
+    # }
     try:
         # pprint(answers)
 
