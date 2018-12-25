@@ -151,9 +151,9 @@ if __name__ == "__main__":
             },
             {
                 "type": "confirm",
-                "name": "return_journey",
-                "message": "Is this a one way trip? ",
-                'default': True,
+                "name": "return",
+                "message": "Return trip? ",
+                'default': False,
             },
             {
                 'type': 'input',
@@ -169,13 +169,13 @@ if __name__ == "__main__":
                 'type': 'input',
                 'name': 'end_date',
                 'message': "Which day you want to book your flight? (follow this format please : YYYY/MM/DD)",
-                "when" : lambda answers: answers["return_journey"]
+                "when" : lambda answers: answers["return"]
             },
             {
                 'type': 'input',
                 'name': 'end_date_time',
                 'message': "Between what time do you want your flight to be? (follow this format please : HH:MM, HH:MM )",
-                "when" : lambda answers: answers["return_journey"]
+                "when" : lambda answers: answers["return"]
             }
 
         ]
@@ -187,10 +187,11 @@ if __name__ == "__main__":
         answers = {
             "start_location" : "Chandigarh",
             "end_location" : "Bangalore",
-            "start_date" : "2018/12/21",
-            "start_date_time" : "14:00, 23:00",
-            "end_date" : "2018/12/25",
-            "end_date_time" : "14:00, 23:00",
+            "start_date" : "2019/02/21",
+            "start_date_time" : "06:00, 23:00",
+            "end_date" : "2019/02/25",
+            "end_date_time" : "06:00, 23:00",
+            "return" : False
 
         }
     try:
@@ -204,7 +205,11 @@ if __name__ == "__main__":
             return date
 
         start_date = get_date(answers["start_date"])
-        end_date = get_date(answers["end_date"])
+        if answers["return"]:
+            end_date = get_date(answers["end_date"])
+        else:
+            end_date = None
+
 
         def get_time(time):
             time = time.strip()
@@ -214,7 +219,10 @@ if __name__ == "__main__":
             return start_time, end_time
 
         start_date_start_time, start_date_end_time = get_time(answers["start_date_time"])
-        end_date_start_time, end_date_end_time = get_time(answers["end_date_time"])
+        if answers["return"]:
+            end_date_start_time, end_date_end_time = get_time(answers["end_date_time"])
+        else:
+            end_date_start_time, end_date_end_time = None, None
 
         def get_location_code(location):
             dict_of_code = {

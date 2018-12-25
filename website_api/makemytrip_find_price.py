@@ -11,6 +11,15 @@ from . import Website
 
 
 class MakeMyTrip(Website):
+    """
+    The class gets the response in the form:
+        "duration': '12h 35m',
+        'end_time': '00:45',
+        'flight_id': 'Jet Airways',
+        'price': 53660,
+        'site': 'goibibo',
+        'start_time': '22:50'
+    """
 
     def _format_date(self, start_date):
         date_str = f"{start_date.day}-{start_date.month}-{start_date.year}"
@@ -57,17 +66,11 @@ class MakeMyTrip(Website):
         return "MakeMyTrip"
 
     def _find_price(self, start_date, start_location, end_location):
-        # 'duration': '12h 35m',
-        # 'end_time': '00:45',
-        # 'flight_id': 'Jet Airways',
-        # 'price': 53660,
-        # 'site': 'goibibo',
-        # 'start_time': '22:50'
+
         dir_path = os.path.dirname(os.path.realpath(__file__))
         dir_path = pathlib.Path(str(dir_path))
         print(f"{dir_path} in makemytrip")
         file_name = dir_path / "chrome_driver_download" / f"chromedriver.exe"
-        # file_name = f"chromedriver.exe"
 
         start_date = self._format_date(start_date)
 
@@ -78,6 +81,7 @@ class MakeMyTrip(Website):
         driver.get(
             f'https://flights.makemytrip.com/makemytrip//search/O/O/E/1/0/0/S/V0/{start_location}_{end_location}_'
             f'{start_date}')
+
         list_of_price = list()
         time = driver.find_elements_by_class_name("timeCa")
         price_list = driver.find_elements_by_class_name("price_info")
@@ -90,6 +94,7 @@ class MakeMyTrip(Website):
             duration = re.findall(r'\d+\w', time[3 * i + 2].get_attribute('innerHTML'))
             flight_id = BeautifulSoup(type_of_flight[i].get_attribute('innerHTML'), 'html.parser').span.contents
 
+            # TODO: Ensure that all the times are datetime
             list_of_price.append({
                 "price": price,
                 "start_time": start_time,
