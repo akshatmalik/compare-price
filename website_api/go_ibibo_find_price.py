@@ -79,7 +79,7 @@ class GoIbibo(Website):
         print(response.json()['data'])
         flight_data = response.json()['data']['onwardflights']
         go_ibibo = list()
-        
+
         # TODO: Time should be datetime
         for flight in flight_data:
             flight_id = flight['airline']

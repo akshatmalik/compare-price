@@ -16,8 +16,7 @@ class Website(abc.ABC):
 
     @abc.abstractmethod
     def _format_date(self, start_date):
-        date_str = str(start_date)
-        return date_str
+        return start_date
 
     @abc.abstractmethod
     def _format_price(self, price):

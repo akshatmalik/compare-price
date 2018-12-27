@@ -97,33 +97,10 @@ class FindLowestPrice:
     # TODO: Verify how the find_flight_in_time_range work with start_date_time
     # TODO: Allow to search with duration
 import sys
-if __name__ == "__main__":
-    import logging
-    logger = logging.getLogger()
-    logger.setLevel(logging.ERROR)
-    # price_obj = FindLowestPrice(start_date=datetime.date(2018, 11, 11), end_date=datetime.date(2018, 11, 15),
-    #                             start_location="DEL", end_location="BLR")
-    # start_price_list, end_price_list = price_obj.find_flight_in_time_range(([10, 15], [17, 59]),
-    #                                                                        ([10, 15], [22, 59]))
-    #
-    # # price_obj = FindLowestPrice(start_date=datetime.date(2018, 11, 11), end_date=None,
-    #                             start_location="IXC", end_location="BLR")
-    # start_price_list, end_price_list = price_obj.find_flight_in_time_range(([10, 15], [17, 59]),
-    #                                                                        #None)
-    # pprint("Start")
-    # pprint(start_price_list[0:3])
-    # if end_price_list is not None:
-    #     pprint("*"*60)
-    #     pprint(end_price_list[0:2])
-    # print("help")
-    #
 
-    print(sys.argv)
-    try:
-        debug = bool(sys.argv[1])
-    except Exception:
-        debug = False
 
+def get_input():
+    global answers
     if not debug:
         from PyInquirer import prompt, print_json
 
@@ -169,13 +146,13 @@ if __name__ == "__main__":
                 'type': 'input',
                 'name': 'end_date',
                 'message': "Which day you want to book your flight? (follow this format please : YYYY/MM/DD)",
-                "when" : lambda answers: answers["return"]
+                "when": lambda answers: answers["return"]
             },
             {
                 'type': 'input',
                 'name': 'end_date_time',
                 'message': "Between what time do you want your flight to be? (follow this format please : HH:MM, HH:MM )",
-                "when" : lambda answers: answers["return"]
+                "when": lambda answers: answers["return"]
             }
 
         ]
@@ -185,18 +162,51 @@ if __name__ == "__main__":
     else:
 
         answers = {
-            "start_location" : "Chandigarh",
-            "end_location" : "Bangalore",
-            "start_date" : "2019/02/21",
-            "start_date_time" : "06:00, 23:00",
-            "end_date" : "2019/02/25",
-            "end_date_time" : "06:00, 23:00",
-            "return" : False
+            "start_location": "Chandigarh",
+            "end_location": "Bangalore",
+            "start_date": "2018/12/30",
+            "start_date_time": "06:00, 23:00",
+            "end_date": "2019/02/25",
+            "end_date_time": "06:00, 23:00",
+            "return": False
 
         }
+
+
+
+
+if __name__ == "__main__":
+    import logging
+    logger = logging.getLogger()
+    logger.setLevel(logging.ERROR)
+    # price_obj = FindLowestPrice(start_date=datetime.date(2018, 11, 11), end_date=datetime.date(2018, 11, 15),
+    #                             start_location="DEL", end_location="BLR")
+    # start_price_list, end_price_list = price_obj.find_flight_in_time_range(([10, 15], [17, 59]),
+    #                                                                        ([10, 15], [22, 59]))
+    #
+    # # price_obj = FindLowestPrice(start_date=datetime.date(2018, 11, 11), end_date=None,
+    #                             start_location="IXC", end_location="BLR")
+    # start_price_list, end_price_list = price_obj.find_flight_in_time_range(([10, 15], [17, 59]),
+    #                                                                        #None)
+    # pprint("Start")
+    # pprint(start_price_list[0:3])
+    # if end_price_list is not None:
+    #     pprint("*"*60)
+    #     pprint(end_price_list[0:2])
+    # print("help")
+    #
+
+    print(sys.argv)
+    try:
+        debug = bool(sys.argv[1])
+    except Exception:
+        debug = False
+
+    get_input()
     try:
         # pprint(answers)
 
+        # TODO: Refactor all of this crap!
 
         def get_date(date):
             date = date.strip()

@@ -9,6 +9,7 @@ from selenium.webdriver.chrome.options import Options
 import helper_methods
 from . import Website
 
+import datetime
 
 class MakeMyTrip(Website):
     """
@@ -32,8 +33,6 @@ class MakeMyTrip(Website):
         return time
 
     def _format_duration(self, time):
-        time[0] = time[0].replace("h", "")
-        time[1] = time[1].replace("m", "")
         return time
 
     def _format_flight_id(self, id):
@@ -94,12 +93,21 @@ class MakeMyTrip(Website):
             duration = re.findall(r'\d+\w', time[3 * i + 2].get_attribute('innerHTML'))
             flight_id = BeautifulSoup(type_of_flight[i].get_attribute('innerHTML'), 'html.parser').span.contents
 
-            # TODO: Ensure that all the times are datetime
+            start_datetime = datetime.datetime.today()
+            start_datetime.replace(hour=int(start_time[0]), minute=int(start_time[1]))
+
+            # hour, minute = duration.split(" ")
+            hour = duration[0].split("h")[0]
+            minute = duration[1].split("m")[0]
+            delta_time = datetime.time(hour=int(hour), minute=int(minute))
+
+            end_datetime = start_datetime + datetime.timedelta(hours=delta_time.hour, minutes=delta_time.minute)
+
             list_of_price.append({
                 "price": price,
-                "start_time": start_time,
-                "end_time": end_time,
-                "duration": duration,
+                "start_time": start_datetime,
+                "end_time": end_datetime,
+                "duration": delta_time,
                 "flight_id": flight_id,
                 "site": self.website_name()
             })
