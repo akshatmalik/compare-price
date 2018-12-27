@@ -230,33 +230,15 @@ if __name__ == "__main__":
 
     get_input()
     try:
-        # pprint(answers)
-
-        # TODO: Refactor all of this crap!
-
-        def get_date(date):
-            date = date.strip()
-            date = date.split("/")
-            date = datetime.date(int(date[0]), int(date[1]), int(date[2]))
-            return date
-
-        start_date = get_date(answers["start_date"])
+        start_date = answers["start_date"]
         if answers["return"]:
-            end_date = get_date(answers["end_date"])
+            end_date = answers["end_date"]
         else:
             end_date = None
 
-
-        def get_time(time):
-            time = time.strip()
-            start_time, end_time = time.split(",")
-            start_time = start_time.strip().split(":")
-            end_time = end_time.strip().split(":")
-            return start_time, end_time
-
-        start_date_start_time, start_date_end_time = get_time(answers["start_date_time"])
+        start_date_start_time, start_date_end_time = answers["start_date_time"]
         if answers["return"]:
-            end_date_start_time, end_date_end_time = get_time(answers["end_date_time"])
+            end_date_start_time, end_date_end_time = answers["end_date_time"]
         else:
             end_date_start_time, end_date_end_time = None, None
 
@@ -273,9 +255,10 @@ if __name__ == "__main__":
 
         price_obj = FindLowestPrice(start_date=start_date, end_date=end_date,
                                     start_location=start_location, end_location=end_location)
-        # start_price_list, end_price_list = price_obj.find_flight_in_time_range((start_date_start_time, start_date_end_time),
-        #                                                                        (end_date_start_time, end_date_end_time))
+        start_price_list, end_price_list = price_obj.find_flight_in_time_range((start_date_start_time, start_date_end_time),
+                                                                               (end_date_start_time, end_date_end_time))
 
+        # TODO: change all the duration logic to now work with datetime
         start_price_list, end_price_list = price_obj.find_time_in_duration((1,20), (22,0), (4,20), (19,0))
 
         # pprint(start_price_list[0:3])
@@ -285,7 +268,9 @@ if __name__ == "__main__":
             for price in price_list:
                 def get_time_str(time):
                     return f"{time[0]}h {time[1]}m"
-                pprint(f"Start time: {get_time_str(price['start_time'])}  Duration: {get_time_str(price['duration'])}  End Time: {get_time_str(price['end_time'])}  Price: {price['price']}  Flight ID : {price['flight_id']}  Site: {price['site']}")
+                pprint(f"Start time: {get_time_str(price['start_time'])}  Duration: {get_time_str(price['duration'])} "
+                       f" End Time: {get_time_str(price['end_time'])}  Price: {price['price']} "
+                       f" Flight ID : {price['flight_id']}  Site: {price['site']}")
 
 
 
