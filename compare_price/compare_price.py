@@ -15,7 +15,7 @@ sys.path.append(r"C:\Users\Akshat Malik\PycharmProjects")
 sys.path.append(r"C:\Users\Akshat Malik\PycharmProjects\find_cheapest_flight\website_api")
 sys.path.append(r"C:\Users\Akshat Malik\PycharmProjects\find_cheapest_flight\compare_price")
 sys.path.append(r"C:\Users\Akshat Malik\PycharmProjects\find_cheapest_flight\venv")
-from website_api import go_ibibo_find_price, makemytrip_find_price
+from website_api import makemytrip_find_price
 
 
 class FindLowestPrice:
@@ -102,7 +102,7 @@ import sys
 def get_input():
     global answers
     if not debug:
-        from PyInquirer import prompt, print_json
+        from PyInquirer import prompt
 
         questions = [
             {
@@ -168,11 +168,37 @@ def get_input():
             "start_date_time": "06:00, 23:00",
             "end_date": "2019/02/25",
             "end_date_time": "06:00, 23:00",
-            "return": False
+            "return": True
 
         }
+    # TODO: Here change all the answers to dattime object
 
+    date_parts = answers["start_date"].split("/")
+    answers["start_date"] = datetime.datetime(year=int(date_parts[0]), month=int(date_parts[1]),
+                                              day=int(date_parts[2]))
+    if answers["return"]:
+        date_parts = answers["end_date"].split("/")
+        answers["end_date"] = datetime.datetime(year=int(date_parts[0]), month=int(date_parts[1]),
+                                                day=int(date_parts[2]))
 
+    time_parts = answers["start_date_time"].split(",")
+    time_parts_start = time_parts[0].strip().split(":")
+    time_parts_end = time_parts[1].strip().split(":")
+    start_date_time = answers["start_date"]
+    start_date_time_start = start_date_time.replace(hour=int(time_parts_start[0]), minute=int(time_parts_start[1]))
+    start_date_time_end = start_date_time.replace(hour=int(time_parts_end[0]), minute=int(time_parts_end[1]))
+    answers["start_date_time"] = (start_date_time_start, start_date_time_end)
+
+    if answers["return"]:
+        time_parts = answers["end_date_time"].split(",")
+        time_parts_start = time_parts[0].strip().split(":")
+        time_parts_end = time_parts[1].strip().split(":")
+        start_date_time = answers["end_date"]
+        start_date_time_start = start_date_time.replace(hour=int(time_parts_start[0]), minute=int(time_parts_start[1]))
+        start_date_time_end = start_date_time.replace(hour=int(time_parts_end[0]), minute=int(time_parts_end[1]))
+        answers["end_date_time"] = (start_date_time_start, start_date_time_end)
+
+    answers
 
 
 if __name__ == "__main__":
