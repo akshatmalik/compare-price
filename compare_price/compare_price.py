@@ -87,7 +87,18 @@ def get_input():
     global answers
     if not debug:
         from PyInquirer import prompt
-
+        """
+        Hi
+        From where you going?  -- Keep checking till valid loation. Give nearest suggestions
+        To where you going?  -- Keep checking till valid loation. Give nearest suggestions
+        Start date for flight -- parse it and check it makes sense?
+        Time for start date to work  -- parse it to check it makes sense
+        Return flight to be booked? -- based on this look for the end flight
+        Return date for flight -- parse it and check it makes sense?
+        Time for Return date to work  -- parse it to check it makes sense
+        Frequency to check for price -- in minutes
+        Email to send updates of the progress
+        """
         questions = [
             {
                 'type': 'input',
