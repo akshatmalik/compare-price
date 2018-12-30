@@ -31,25 +31,12 @@ class FindLowestPrice:
         results.extend(makemytrip_find_price.MakeMyTrip().find_price(date, self.start_location, self.end_location))
         return results
 
-    def _filter_by_time(self, start_price_list, start_time, end_time):
+    def _filter_by_time(self, start_price_list: list, start_time: datetime, end_time: datetime):
 
         filtered_time_list = list()
         for time in start_price_list:
 
-            duration_actual = [0,0]
-
-            duration_actual[0] = int(end_time[0]) - int(start_time[0])
-            duration_actual[1] = int(end_time[1]) - int(start_time[1])
-
-            if duration_actual[1] < 0:
-                duration_actual[0] += 1
-
-            if int(time["duration"][0]) > int(duration_actual[0]):
-                continue
-
-            if int(time["start_time"][0]) >= int(start_time[0]) and int(time["start_time"][1]) >= int(
-                    start_time[1]) and int(time["start_time"][0]) <= int(end_time[0]) and int(time["start_time"][1]) <= int(
-                    end_time[1]):
+            if start_time <= time["start_time"] <= end_time:
                 filtered_time_list.append(time)
 
         return filtered_time_list
@@ -69,13 +56,13 @@ class FindLowestPrice:
         return start_price_list, end_price_list
 
     # noinspection PyShadowingNames
-    def find_flight_in_time_range(self, start_date_time, end_date_time):
+    def find_flight_in_time_range(self, start_date_times: (datetime, datetime), end_date_times: (datetime, datetime)):
         start_price_list, end_price_list = self.find_lowest_price()
 
-        start_price_list = self._filter_by_time(start_price_list, start_date_time[0], start_date_time[1])
-        if end_date_time is None:
+        start_price_list = self._filter_by_time(start_price_list, start_date_times[0], start_date_times[1])
+        if end_date_times is None:
             return start_price_list, None
-        end_price_list = self._filter_by_time(end_price_list, end_date_time[0], end_date_time[1])
+        end_price_list = self._filter_by_time(end_price_list, end_date_times[0], end_date_times[1])
 
         return start_price_list, end_price_list
 
@@ -164,14 +151,14 @@ def get_input():
         answers = {
             "start_location": "Chandigarh",
             "end_location": "Bangalore",
-            "start_date": "2018/12/30",
+            "start_date": "2019/01/27",
             "start_date_time": "06:00, 23:00",
             "end_date": "2019/02/25",
             "end_date_time": "06:00, 23:00",
             "return": True
 
         }
-    # TODO: Here change all the answers to dattime object
+    # TODO: Here change all the answers to datetime object
 
     date_parts = answers["start_date"].split("/")
     answers["start_date"] = datetime.datetime(year=int(date_parts[0]), month=int(date_parts[1]),
@@ -227,7 +214,16 @@ if __name__ == "__main__":
         debug = bool(sys.argv[1])
     except Exception:
         debug = False
+    def get_location_code(location, only_locations = False):
 
+        dict_of_code = {
+            "Bangalore" : "BLR", "Chandigarh" : "IXC", "Patna" : "PAT", "Delhi" : "DEL",
+        }
+
+        if only_locations:
+            return dict_of_code.keys()
+        else:
+            return dict_of_code[location]
     get_input()
     try:
         start_date = answers["start_date"]
@@ -242,11 +238,7 @@ if __name__ == "__main__":
         else:
             end_date_start_time, end_date_end_time = None, None
 
-        def get_location_code(location):
-            dict_of_code = {
-                    "Bangalore" : "BLR", "Chandigarh" : "IXC", "Patna" : "PAT", "Delhi" : "DEL",
-            }
-            return dict_of_code[location]
+
 
         start_location = get_location_code(answers["start_location"])
         end_location = get_location_code(answers["end_location"])
@@ -258,12 +250,9 @@ if __name__ == "__main__":
         start_price_list, end_price_list = price_obj.find_flight_in_time_range((start_date_start_time, start_date_end_time),
                                                                                (end_date_start_time, end_date_end_time))
 
-        # TODO: change all the duration logic to now work with datetime
-        start_price_list, end_price_list = price_obj.find_time_in_duration((1,20), (22,0), (4,20), (19,0))
-
         # pprint(start_price_list[0:3])
 
-        # TODO: Have to see why the prettifying output step is failing. the dict format is wrong
+
         def print_price(price_list):
             for price in price_list:
                 def get_time_str(time):
