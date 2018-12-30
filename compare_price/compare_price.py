@@ -80,9 +80,6 @@ class FindLowestPrice:
         # pprint(end_date_start_time)
 
         return self.find_flight_in_time_range( (start_date_time, start_date_start_time), (end_date_time, end_date_start_time))
-
-    # TODO: Verify how the find_flight_in_time_range work with start_date_time
-    # TODO: Allow to search with duration
 import sys
 
 
@@ -98,20 +95,14 @@ def get_input():
                 'message': "Welcome to Compare Price!\n Lets get started? (Press Enter to begin)",
             },
             {
-                "type": "list",
+                'type': 'input',
                 "name": "start_location",
                 "message": "Where is your trip starting from? ",
-                "choices": [
-                    "Bangalore", "Chandigarh", "Patna", "Delhi",
-                ],
             },
             {
-                "type": "list",
+                'type': 'input',
                 "name": "end_location",
                 "message": "Where is your trip ending at? ",
-                "choices": [
-                    "Bangalore", "Chandigarh", "Patna", "Delhi",
-                ],
             },
             {
                 "type": "confirm",
@@ -149,8 +140,8 @@ def get_input():
     else:
 
         answers = {
-            "start_location": "Chandigarh",
-            "end_location": "Bangalore",
+            "start_location": "chandigarh",
+            "end_location": "bangalore",
             "start_date": "2019/01/27",
             "start_date_time": "06:00, 23:00",
             "end_date": "2019/02/25",
@@ -158,7 +149,6 @@ def get_input():
             "return": True
 
         }
-    # TODO: Here change all the answers to datetime object
 
     date_parts = answers["start_date"].split("/")
     answers["start_date"] = datetime.datetime(year=int(date_parts[0]), month=int(date_parts[1]),
@@ -214,16 +204,14 @@ if __name__ == "__main__":
         debug = bool(sys.argv[1])
     except Exception:
         debug = False
-    def get_location_code(location, only_locations = False):
+    def get_location_code(location):
 
-        dict_of_code = {
-            "Bangalore" : "BLR", "Chandigarh" : "IXC", "Patna" : "PAT", "Delhi" : "DEL",
-        }
+        import pandas as pd
+        df = pd.read_csv("india_country_code.csv")
 
-        if only_locations:
-            return dict_of_code.keys()
-        else:
-            return dict_of_code[location]
+        df_loc = df[df.apply(lambda row: location.lower() in row["City name"].lower(), axis=1)]
+
+        return df_loc.iloc[0]["Airport Code"]
     get_input()
     try:
         start_date = answers["start_date"]
