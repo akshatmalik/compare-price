@@ -83,6 +83,29 @@ class FindLowestPrice:
 import sys
 
 
+def get_date(date):
+    date_parts = date.split("/")
+    try:
+        entered_date =  datetime.datetime(year=int(date_parts[0]), month=int(date_parts[1]),
+                                 day=int(date_parts[2]))
+        if entered_date <= datetime.datetime.today():
+            raise Exception("Falied compariosin")
+        return entered_date
+    except Exception as e:
+        print(e)
+        return None
+
+
+def get_time(time, date):
+    try:
+        time_parts_start = time.strip().split(":")
+        start_date_time = date
+        start_date_time_start = start_date_time.replace(hour=int(time_parts_start[0]), minute=int(time_parts_start[1]))
+        return start_date_time_start
+    except Exception:
+        return None
+
+
 def get_input():
     global answers
     if not debug:
@@ -99,54 +122,137 @@ def get_input():
         Frequency to check for price -- in minutes
         Email to send updates of the progress
         """
-        questions = [
+
+        questions_hi = [
             {
                 'type': 'input',
                 'name': 'dummy',
-                'message': "Welcome to Compare Price!\n Lets get started? (Press Enter to begin)",
+                'message': "Welcome to Compare Price!\nLets get started? (Press Enter to begin)",
             },
-            {
-                'type': 'input',
-                "name": "start_location",
-                "message": "Where is your trip starting from? ",
-            },
-            {
-                'type': 'input',
-                "name": "end_location",
-                "message": "Where is your trip ending at? ",
-            },
+        ]
+        answers = prompt(questions_hi)
+
+        # questions_start_location = [
+        #     {
+        #         'type': 'input',
+        #         "name": "start_location",
+        #         "message": "Where is your trip starting from? ",
+        #     },
+        # ]
+        #
+        # answers = prompt(questions_start_location, answers)
+        # while get_location_code(answers["start_location"], True):
+        #     answers = prompt(questions_start_location, answers)
+        #
+        # questions_end_location = [
+        #     {
+        #         'type': 'input',
+        #         "name": "end_location",
+        #         "message": "Where is your trip ending at? ",
+        #     },
+        # ]
+        # answers = prompt(questions_end_location, answers)
+        # while get_location_code(answers["end_location"], True):
+        #     answers = prompt(questions_end_location, answers)
+
+        questions_is_return_journey = [
             {
                 "type": "confirm",
                 "name": "return",
                 "message": "Return trip? ",
                 'default': False,
             },
+        ]
+        answers = prompt(questions_is_return_journey, answers)
+
+        questions_start_location_start_date = [
             {
                 'type': 'input',
                 'name': 'start_date',
                 'message': "Which day you want to book your flight? (follow this format please : YYYY/MM/DD)",
             },
-            {
-                'type': 'input',
-                'name': 'start_date_time',
-                'message': "Between what time do you want your flight to be? (follow this format please : HH:MM, HH:MM )",
-            },
-            {
-                'type': 'input',
-                'name': 'end_date',
-                'message': "Which day you want to book your flight? (follow this format please : YYYY/MM/DD)",
-                "when": lambda answers: answers["return"]
-            },
-            {
-                'type': 'input',
-                'name': 'end_date_time',
-                'message': "Between what time do you want your flight to be? (follow this format please : HH:MM, HH:MM )",
-                "when": lambda answers: answers["return"]
-            }
-
         ]
+        answers = prompt(questions_start_location_start_date, answers)
+        print(get_date(answers["start_date"]))
+        while get_date(answers["start_date"]) is None:
+            answers = prompt(questions_start_location_start_date, answers)
+            print(get_date(answers["start_date"]))
+            pprint(answers)
+        answers["start_date"] = get_date(answers["start_date"])
 
-        answers = prompt(questions)
+        questions_start_location_time_range_start = [
+            {
+                'type': 'input',
+                'name': 'start_date_time_range_start',
+                'message': f"After what time are you looking flights for on {answers['start_date'].date()}? (Format HH:MM)",
+            },
+        ]
+        answers = prompt(questions_start_location_time_range_start, answers)
+
+        while get_time(answers["start_date_time_range_start"], answers["start_date"]) is None:
+            answers = prompt(questions_start_location_time_range_start, answers)
+            pprint(answers)
+
+        questions_start_location_time_range_end = [
+            {
+                'type': 'input',
+                'name': 'start_date_time_range_end',
+                'message': f"Till what time are you looking flights for on {answers['start_date']}? (Format HH:MM)",
+            },
+        ]
+        answers = prompt(questions_start_location_time_range_end, answers)
+
+        while get_time(answers["start_date_time_range_end"], answers["start_date"]) is None:
+            answers = prompt(questions_start_location_time_range_end, answers)
+            pprint(answers)
+
+        answers["start_date_time"] = (answers["start_date_time_range_start"], answers["start_date_time_range_end"])
+
+        if answers["return"]:
+            questions_end_location_start_date = [
+                {
+                    'type': 'input',
+                    'name': 'end_date',
+                    'message': "Which day you want to book your return flight? "
+                               "(follow this format please : YYYY/MM/DD)",
+                },
+            ]
+            answers = prompt(questions_end_location_start_date, answers)
+
+            while get_date(answers["end_date"]) is None:
+                answers = prompt(questions_end_location_start_date, answers)
+                pprint(answers)
+            answers["end_date"] = get_date(answers["end_date"])
+
+            questions_end_location_time_range_start = [
+                {
+                    'type': 'input',
+                    'name': 'end_date_time_range_start',
+                    'message': f"After what time are you looking flights for on {answers['end_date']}? (Format HH:MM)",
+                },
+            ]
+            answers = prompt(questions_end_location_time_range_start, answers)
+
+            while get_time(answers["end_date_time_range_start"], answers["end_date"]) is None:
+                answers = prompt(questions_end_location_time_range_start, answers)
+                pprint(answers)
+
+            questions_start_location_time_range_end = [
+                {
+                    'type': 'input',
+                    'name': 'end_date_time_range_end',
+                    'message': f"Till what time are you looking flights for on {answers['end_date']}? (Format HH:MM)",
+                },
+            ]
+            answers = prompt(questions_start_location_time_range_end, answers)
+
+            while get_time(answers["end_date_time_range_end"], answers["end_date"]) is None:
+                answers = prompt(questions_start_location_time_range_end, answers)
+                pprint(answers)
+
+            answers["end_date_time"] = (answers["end_date_time_range_start"], answers["end_date_time_range_end"])
+
+
     # #  pyinstaller --onefile compare_price\compare_price.py
     else:
 
@@ -161,68 +267,31 @@ def get_input():
 
         }
 
-    date_parts = answers["start_date"].split("/")
-    answers["start_date"] = datetime.datetime(year=int(date_parts[0]), month=int(date_parts[1]),
-                                              day=int(date_parts[2]))
-    if answers["return"]:
-        date_parts = answers["end_date"].split("/")
-        answers["end_date"] = datetime.datetime(year=int(date_parts[0]), month=int(date_parts[1]),
-                                                day=int(date_parts[2]))
-
-    time_parts = answers["start_date_time"].split(",")
-    time_parts_start = time_parts[0].strip().split(":")
-    time_parts_end = time_parts[1].strip().split(":")
-    start_date_time = answers["start_date"]
-    start_date_time_start = start_date_time.replace(hour=int(time_parts_start[0]), minute=int(time_parts_start[1]))
-    start_date_time_end = start_date_time.replace(hour=int(time_parts_end[0]), minute=int(time_parts_end[1]))
-    answers["start_date_time"] = (start_date_time_start, start_date_time_end)
-
-    if answers["return"]:
-        time_parts = answers["end_date_time"].split(",")
-        time_parts_start = time_parts[0].strip().split(":")
-        time_parts_end = time_parts[1].strip().split(":")
-        start_date_time = answers["end_date"]
-        start_date_time_start = start_date_time.replace(hour=int(time_parts_start[0]), minute=int(time_parts_start[1]))
-        start_date_time_end = start_date_time.replace(hour=int(time_parts_end[0]), minute=int(time_parts_end[1]))
-        answers["end_date_time"] = (start_date_time_start, start_date_time_end)
-
     answers
+def get_location_code(location, validate_location = False):
 
+    import pandas as pd
+    df = pd.read_csv("india_country_code.csv")
+
+    df_loc = df[df.apply(lambda row: location.lower() in row["City name"].lower(), axis=1)]
+    if validate_location:
+        if len(df_loc) != 0:
+            return True
+        else:
+            return False
+    return df_loc.iloc[0]["Airport Code"]
 
 if __name__ == "__main__":
     import logging
     logger = logging.getLogger()
     logger.setLevel(logging.ERROR)
-    # price_obj = FindLowestPrice(start_date=datetime.date(2018, 11, 11), end_date=datetime.date(2018, 11, 15),
-    #                             start_location="DEL", end_location="BLR")
-    # start_price_list, end_price_list = price_obj.find_flight_in_time_range(([10, 15], [17, 59]),
-    #                                                                        ([10, 15], [22, 59]))
-    #
-    # # price_obj = FindLowestPrice(start_date=datetime.date(2018, 11, 11), end_date=None,
-    #                             start_location="IXC", end_location="BLR")
-    # start_price_list, end_price_list = price_obj.find_flight_in_time_range(([10, 15], [17, 59]),
-    #                                                                        #None)
-    # pprint("Start")
-    # pprint(start_price_list[0:3])
-    # if end_price_list is not None:
-    #     pprint("*"*60)
-    #     pprint(end_price_list[0:2])
-    # print("help")
-    #
 
     print(sys.argv)
     try:
         debug = bool(sys.argv[1])
     except Exception:
         debug = False
-    def get_location_code(location):
 
-        import pandas as pd
-        df = pd.read_csv("india_country_code.csv")
-
-        df_loc = df[df.apply(lambda row: location.lower() in row["City name"].lower(), axis=1)]
-
-        return df_loc.iloc[0]["Airport Code"]
     get_input()
     try:
         start_date = answers["start_date"]
