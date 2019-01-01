@@ -122,7 +122,7 @@ def get_input():
         Frequency to check for price -- in minutes
         Email to send updates of the progress
         """
-
+        # TODO: Do the extra input and clean code
         questions_hi = [
             {
                 'type': 'input',
@@ -132,28 +132,28 @@ def get_input():
         ]
         answers = prompt(questions_hi)
 
-        # questions_start_location = [
-        #     {
-        #         'type': 'input',
-        #         "name": "start_location",
-        #         "message": "Where is your trip starting from? ",
-        #     },
-        # ]
-        #
-        # answers = prompt(questions_start_location, answers)
-        # while get_location_code(answers["start_location"], True):
-        #     answers = prompt(questions_start_location, answers)
-        #
-        # questions_end_location = [
-        #     {
-        #         'type': 'input',
-        #         "name": "end_location",
-        #         "message": "Where is your trip ending at? ",
-        #     },
-        # ]
-        # answers = prompt(questions_end_location, answers)
-        # while get_location_code(answers["end_location"], True):
-        #     answers = prompt(questions_end_location, answers)
+        questions_start_location = [
+            {
+                'type': 'input',
+                "name": "start_location",
+                "message": "Where is your trip starting from? ",
+            },
+        ]
+
+        answers = prompt(questions_start_location, answers)
+        while get_location_code(answers["start_location"], True):
+            answers = prompt(questions_start_location, answers)
+
+        questions_end_location = [
+            {
+                'type': 'input',
+                "name": "end_location",
+                "message": "Where is your trip ending at? ",
+            },
+        ]
+        answers = prompt(questions_end_location, answers)
+        while get_location_code(answers["end_location"], True):
+            answers = prompt(questions_end_location, answers)
 
         questions_is_return_journey = [
             {
@@ -268,6 +268,7 @@ def get_input():
         }
 
     answers
+
 def get_location_code(location, validate_location = False):
 
     import pandas as pd
