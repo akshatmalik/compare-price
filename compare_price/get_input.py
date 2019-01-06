@@ -35,7 +35,8 @@ def get_time(time: str, date: datetime) -> datetime:
         start_date_time = date
         start_date_time_start = start_date_time.replace(hour=int(time_parts_start[0]), minute=int(time_parts_start[1]))
         return start_date_time_start
-    except Exception:
+    except Exception as e:
+        print(e)
         return None
 
 
@@ -90,6 +91,7 @@ def get_input(debug: bool) -> List[str]:
         ]
         answers = prompt(questions_hi)
 
+        # LOCATIONS
         questions_start_location = [
             {
                 'type': 'input',
@@ -113,6 +115,7 @@ def get_input(debug: bool) -> List[str]:
         while get_location_code(answers["end_location"], True):
             answers = prompt(questions_end_location, answers)
 
+        # RETURN JOURNEY
         questions_is_return_journey = [
             {
                 "type": "confirm",
@@ -123,6 +126,7 @@ def get_input(debug: bool) -> List[str]:
         ]
         answers = prompt(questions_is_return_journey, answers)
 
+        # START DATE
         questions_start_location_start_date = [
             {
                 'type': 'input',
@@ -131,42 +135,93 @@ def get_input(debug: bool) -> List[str]:
             },
         ]
         answers = prompt(questions_start_location_start_date, answers)
-        print(get_date(answers["start_date"]))
         while get_date(answers["start_date"]) is None:
             answers = prompt(questions_start_location_start_date, answers)
-            print(get_date(answers["start_date"]))
-            pprint(answers)
-        answers["start_date"] = get_date(answers["start_date"])
+        temp_date = [get_date(answers["start_date"])]
+        answers["start_date"] = []
+        answers["start_date"].extend(temp_date)
 
+        # START DATE TIME RANGE -- START
         questions_start_location_time_range_start = [
             {
                 'type': 'input',
                 'name': 'start_date_time_range_start',
-                'message': f"After what time are you looking flights for on {answers['start_date'].date()}? (Format HH:MM)",
+                'message': f"After what time are you looking flights for on {answers['start_date'][0].date()}? "
+                           f"(Format HH:MM)",
             },
         ]
         answers = prompt(questions_start_location_time_range_start, answers)
 
-        while get_time(answers["start_date_time_range_start"], answers["start_date"]) is None:
+        while get_time(answers["start_date_time_range_start"], answers["start_date"][0]) is None:
             answers = prompt(questions_start_location_time_range_start, answers)
-            pprint(answers)
 
+        # START DATE TIME RANGE -- END
         questions_start_location_time_range_end = [
             {
                 'type': 'input',
                 'name': 'start_date_time_range_end',
-                'message': f"Till what time are you looking flights for on {answers['start_date']}? (Format HH:MM)",
+                'message': f"Till what time are you looking flights for on {answers['start_date'][0].date()}? "
+                           f"(Format HH:MM)",
             },
         ]
         answers = prompt(questions_start_location_time_range_end, answers)
 
-        while get_time(answers["start_date_time_range_end"], answers["start_date"]) is None:
+        while get_time(answers["start_date_time_range_end"], answers["start_date"][0]) is None:
             answers = prompt(questions_start_location_time_range_end, answers)
+
+        # MULTIPLE DATE RANGES
+        questions_multiple_dates = [
+            {
+                'type': 'confirm',
+                'name': 'multiple_dates',
+                "message": "Do you want to track multiple dates? ",
+                'default': False,
+            }
+        ]
+        answers = prompt(questions_multiple_dates, answers)
+
+        if answers["multiple_dates"] is True:
+
+            # MULTIPLE DATE RANGES -- START
+            questions_start_location_start_date = [
+                {
+                    'type': 'input',
+                    'name': 'start_date_append',
+                    'message': "Which day you want to book your flight? (follow this format please : YYYY/MM/DD)",
+                },
+            ]
+
+            questions_do_you_want_to_enter_another_date = [
+                {
+                    'type': 'confirm',
+                    'name': 'enter_another_date',
+                    "message": "Do you want to enter another date?",
+                    'default': False,
+                }
+            ]
+
+            loop = True
+            while loop:
+                answers = prompt(questions_start_location_start_date, answers)
+                while get_date(answers["start_date_append"]) is None:
+                    answers = prompt(questions_start_location_start_date, answers)
+                answers["start_date"].append(get_date(answers["start_date_append"]))
+                answers = prompt(questions_do_you_want_to_enter_another_date, answers)
+                loop = answers["enter_another_date"]
+
+        # MAKE START DATE TIMES
+        answers["start_date_time"] = []
+        for date in answers["start_date"]:
+            pprint(date)
+            start_date_range = get_time(answers["start_date_time_range_start"], date)
+            end_date_range = get_time(answers["start_date_time_range_end"], date)
+            answers["start_date_time"].append((start_date_range, end_date_range))
             pprint(answers)
 
-        answers["start_date_time"] = (answers["start_date_time_range_start"], answers["start_date_time_range_end"])
-
+        # RETURN JOURNEY THINGS NOW
         if answers["return"]:
+
+            # END DATE
             questions_end_location_start_date = [
                 {
                     'type': 'input',
@@ -176,57 +231,109 @@ def get_input(debug: bool) -> List[str]:
                 },
             ]
             answers = prompt(questions_end_location_start_date, answers)
-
             while get_date(answers["end_date"]) is None:
                 answers = prompt(questions_end_location_start_date, answers)
-                pprint(answers)
-            answers["end_date"] = get_date(answers["end_date"])
+            temp_date = [get_date(answers["end_date"])]
+            answers["end_date"] = []
+            answers["end_date"].extend(temp_date)
 
+            # END DATE -- START TIME
             questions_end_location_time_range_start = [
                 {
                     'type': 'input',
                     'name': 'end_date_time_range_start',
-                    'message': f"After what time are you looking flights for on {answers['end_date']}? (Format HH:MM)",
+                    'message': f"After what time are you looking flights for on {answers['end_date'][0].date()}? "
+                               f"(Format HH:MM)",
                 },
             ]
             answers = prompt(questions_end_location_time_range_start, answers)
 
-            while get_time(answers["end_date_time_range_start"], answers["end_date"]) is None:
+            while get_time(answers["end_date_time_range_start"], answers['end_date'][0]) is None:
                 answers = prompt(questions_end_location_time_range_start, answers)
-                pprint(answers)
 
+            # END DATE -- END TIME
             questions_start_location_time_range_end = [
                 {
                     'type': 'input',
                     'name': 'end_date_time_range_end',
-                    'message': f"Till what time are you looking flights for on {answers['end_date']}? (Format HH:MM)",
+                    'message': f"Till what time are you looking flights for on {answers['end_date'][0].date()}? "
+                               f"(Format HH:MM)",
                 },
             ]
             answers = prompt(questions_start_location_time_range_end, answers)
 
-            while get_time(answers["end_date_time_range_end"], answers["end_date"]) is None:
+            while get_time(answers["end_date_time_range_end"], answers['end_date'][0]) is None:
                 answers = prompt(questions_start_location_time_range_end, answers)
-                pprint(answers)
 
-            answers["end_date_time"] = (answers["end_date_time_range_start"], answers["end_date_time_range_end"])
+            # MULTIPLE DATES
+            questions_multiple_dates = [
+                {
+                    'type': 'confirm',
+                    'name': 'multiple_dates',
+                    "message": "Do you want to track multiple dates? ",
+                    'default': False,
+                }
+            ]
+            answers = prompt(questions_multiple_dates, answers)
+
+            if answers["multiple_dates"] is True:
+
+                # LOOP MULTIPLE DATES
+                questions_start_location_start_date = [
+                    {
+                        'type': 'input',
+                        'name': 'end_date_append',
+                        'message': "Which day you want to book your flight? (follow this format please : YYYY/MM/DD) \n",
+                    },
+                ]
+
+                questions_do_you_want_to_enter_another_date = [
+                    {
+                        'type': 'confirm',
+                        'name': 'enter_another_date',
+                        "message": "Do you want to enter another date?",
+                        'default': False,
+                    }
+                ]
+
+                loop = True
+                while loop:
+                    answers = prompt(questions_start_location_start_date, answers)
+                    while get_date(answers["end_date_append"]) is None:
+                        answers = prompt(questions_start_location_start_date, answers)
+                    answers["end_date"].append(get_date(answers["end_date_append"]))
+                    answers = prompt(questions_do_you_want_to_enter_another_date, answers)
+                    loop = answers["enter_another_date"]
+
+            # MAKE START DATE TIMES
+            answers["end_date_time"] = []
+            for date in answers["end_date"]:
+                start_date_range = get_time(answers["end_date_time_range_start"], date)
+                end_date_range = get_time(answers["end_date_time_range_end"], date)
+                answers["end_date_time"].append((start_date_range, end_date_range))
 
             answers["start_location_code"] = get_location_code(answers["start_location"])
             answers["end_location_code"] = get_location_code(answers["end_location"])
+
+        # pprint(answers)
 
     # #  pyinstaller --onefile compare_price\compare_price.py
     else:
 
         answers = {
             "start_location": "chandigarh",
-            "end_location": "bangalore",
-            "start_date": "2019/01/27",
-            "start_date_time": "06:00, 23:00",
-            "end_date": "2019/02/25",
-            "end_date_time": "06:00, 23:00",
+            "end_location": "bengaluru",
+            "start_date": [datetime.datetime(2019, 2, 1), datetime.datetime(2019, 2, 2), datetime.datetime(2019, 2, 3)],
+            "start_date_time": [(datetime.datetime(2019, 2, 1, 9, 0), datetime.datetime(2019, 2, 1, 23, 0)),
+                                (datetime.datetime(2019, 2, 2, 9, 0), datetime.datetime(2019, 2, 2, 23, 0)),
+                                (datetime.datetime(2019, 2, 3, 9, 0), datetime.datetime(2019, 2, 3, 23, 0))],
+            "end_date_time": [(datetime.datetime(2019, 3, 1, 9, 0), datetime.datetime(2019, 3, 1, 23, 0)),
+                              (datetime.datetime(2019, 3, 2, 9, 0), datetime.datetime(2019, 3, 2, 23, 0)),
+                              (datetime.datetime(2019, 3, 3, 9, 0), datetime.datetime(2019, 3, 3, 23, 0))],
+            "end_date": [datetime.datetime(2019, 3, 1), datetime.datetime(2019, 3, 2), datetime.datetime(2019, 3, 3)],
             "return": True,
-            "start_location_code" : "",
-            "end_location_code" : "",
-
+            "start_location_code": "IXC",
+            "end_location_code": "BLR",
         }
 
     return answers

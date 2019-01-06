@@ -6,7 +6,7 @@ import zipfile
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import helper_methods
+from website_api import helper_methods
 from . import Website
 
 import datetime

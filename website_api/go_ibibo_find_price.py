@@ -3,6 +3,7 @@ import os
 import sys
 import sys
 sys.path.insert(0, r"C:\Users\Akshat Malik\PycharmProjects\find_cheapest_flight")
+
 file_dir = os.path.dirname(__file__)
 sys.path.append(file_dir)
 
