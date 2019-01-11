@@ -71,7 +71,7 @@ class MakeMyTrip(Website):
         print(f"{dir_path} in makemytrip")
         file_name = dir_path / "chrome_driver_download" / f"chromedriver.exe"
 
-        start_date = self._format_date(start_date)
+        start_date_str = self._format_date(start_date)
 
         chrome_options = Options()
         chrome_options.add_argument("--headless")
@@ -79,8 +79,9 @@ class MakeMyTrip(Website):
         driver = webdriver.Chrome(executable_path= str(file_name), chrome_options=chrome_options)
         driver.get(
             f'https://flights.makemytrip.com/makemytrip//search/O/O/E/1/0/0/S/V0/{start_location}_{end_location}_'
-            f'{start_date}')
-
+            f'{start_date_str}')
+        from time import sleep
+        sleep(3)
         list_of_price = list()
         time = driver.find_elements_by_class_name("timeCa")
         price_list = driver.find_elements_by_class_name("price_info")
@@ -93,15 +94,15 @@ class MakeMyTrip(Website):
             duration = re.findall(r'\d+\w', time[3 * i + 2].get_attribute('innerHTML'))
             flight_id = BeautifulSoup(type_of_flight[i].get_attribute('innerHTML'), 'html.parser').span.contents
 
-            start_datetime = datetime.datetime.today()
-            start_datetime.replace(hour=int(start_time[0]), minute=int(start_time[1]))
+            start_datetime = start_date
+            start_datetime = start_datetime.replace(hour=int(start_time[0]), minute=int(start_time[1]))
 
             # hour, minute = duration.split(" ")
-            hour = duration[0].split("h")[0]
-            minute = duration[1].split("m")[0]
-            delta_time = datetime.time(hour=int(hour), minute=int(minute))
+            hour = int(duration[0].split("h")[0])
+            minute = int(duration[1].split("m")[0])
+            delta_time = datetime.timedelta(minutes= hour * 60 + minute)
 
-            end_datetime = start_datetime + datetime.timedelta(hours=delta_time.hour, minutes=delta_time.minute)
+            end_datetime = start_datetime + delta_time
 
             list_of_price.append({
                 "price": price,

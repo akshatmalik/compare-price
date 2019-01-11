@@ -1,6 +1,6 @@
 import datetime
 from pprint import pprint
-from typing import List
+from typing import List, Dict
 
 
 def get_date(date: str) -> (datetime, None):
@@ -60,7 +60,7 @@ def get_location_code(location: str, validate_location: bool = False) -> {str, N
     return df_loc.iloc[0]["Airport Code"]
 
 
-def get_input(debug: bool) -> List[str]:
+def get_input(debug: bool) -> Dict:
     """
     If it is debugging, then straight away give the answer key. Else ask for input
 
@@ -315,22 +315,31 @@ def get_input(debug: bool) -> List[str]:
             answers["start_location_code"] = get_location_code(answers["start_location"])
             answers["end_location_code"] = get_location_code(answers["end_location"])
 
-        # pprint(answers)
-
-    # #  pyinstaller --onefile compare_price\compare_price.py
     else:
 
         answers = {
             "start_location": "chandigarh",
             "end_location": "bengaluru",
-            "start_date": [datetime.datetime(2019, 2, 1), datetime.datetime(2019, 2, 2), datetime.datetime(2019, 2, 3)],
-            "start_date_time": [(datetime.datetime(2019, 2, 1, 9, 0), datetime.datetime(2019, 2, 1, 23, 0)),
-                                (datetime.datetime(2019, 2, 2, 9, 0), datetime.datetime(2019, 2, 2, 23, 0)),
-                                (datetime.datetime(2019, 2, 3, 9, 0), datetime.datetime(2019, 2, 3, 23, 0))],
-            "end_date_time": [(datetime.datetime(2019, 3, 1, 9, 0), datetime.datetime(2019, 3, 1, 23, 0)),
-                              (datetime.datetime(2019, 3, 2, 9, 0), datetime.datetime(2019, 3, 2, 23, 0)),
-                              (datetime.datetime(2019, 3, 3, 9, 0), datetime.datetime(2019, 3, 3, 23, 0))],
-            "end_date": [datetime.datetime(2019, 3, 1), datetime.datetime(2019, 3, 2), datetime.datetime(2019, 3, 3)],
+            "start_date": [
+                datetime.datetime(2019, 2, 3),
+                # datetime.datetime(2019, 2, 2),
+                # datetime.datetime(2019, 2, 3)
+                           ],
+            "start_date_time": [
+                (datetime.datetime(2019, 2, 3, 9, 0), datetime.datetime(2019, 2, 3, 23, 0)),
+                                # (datetime.datetime(2019, 2, 2, 9, 0), datetime.datetime(2019, 2, 2, 23, 0)),
+                                # (datetime.datetime(2019, 2, 3, 9, 0), datetime.datetime(2019, 2, 3, 23, 0))
+                                ],
+            "end_date_time": [(
+                datetime.datetime(2019, 3, 1, 9, 0), datetime.datetime(2019, 3, 1, 23, 0)),
+                              # (datetime.datetime(2019, 3, 2, 9, 0), datetime.datetime(2019, 3, 2, 23, 0)),
+                              # (datetime.datetime(2019, 3, 3, 9, 0), datetime.datetime(2019, 3, 3, 23, 0))
+            ],
+            "end_date": [
+                datetime.datetime(2019, 3, 1),
+                # datetime.datetime(2019, 3, 2),
+                # datetime.datetime(2019, 3, 3)
+                         ],
             "return": True,
             "start_location_code": "IXC",
             "end_location_code": "BLR",
