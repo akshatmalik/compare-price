@@ -49,7 +49,8 @@ def get_location_code(location: str, validate_location: bool = False) -> {str, N
     :return:
     """
     import pandas as pd
-    df = pd.read_csv("india_country_code.csv")
+    df = pd.read_csv(r"C:\Users\Akshat Malik\PycharmProjects\find_cheapest_flight\india_country_code.csv")
+    # print(df)
 
     df_loc = df[df.apply(lambda row: location.lower() in row["City name"].lower(), axis=1)]
     if validate_location:
@@ -72,7 +73,7 @@ def get_input(debug: bool) -> Dict:
     If it is debugging, then straight away give the answer key. Else ask for input
 
     :param debug: check for debug key
-    :return: all the parameters for the ansheres
+    :return: all the parameters for the answers
     """
     if not debug:
         from PyInquirer import prompt
@@ -108,8 +109,9 @@ def get_input(debug: bool) -> Dict:
         ]
 
         answers = prompt(questions_start_location, answers)
-        while get_location_code(answers["start_location"], True):
+        while not get_location_code(answers["start_location"], True):
             answers = prompt(questions_start_location, answers)
+        answers["start_location_code"] = get_location_code(answers["start_location"])
 
         questions_end_location = [
             {
@@ -119,8 +121,9 @@ def get_input(debug: bool) -> Dict:
             },
         ]
         answers = prompt(questions_end_location, answers)
-        while get_location_code(answers["end_location"], True):
+        while not get_location_code(answers["end_location"], True):
             answers = prompt(questions_end_location, answers)
+        answers["end_location_code"] = get_location_code(answers["end_location"])
 
         # RETURN JOURNEY
         questions_is_return_journey = [
@@ -345,11 +348,11 @@ def get_input(debug: bool) -> Dict:
             answers = prompt(questions_how_ofter_to_update, answers)
 
     else:
-
+        # print(get_location_code("bangalore"), True)
         answers = {
-            "notification_time" : 60
+            "notification_time" : 60,
             "start_location": "chandigarh",
-            "end_location": "bengaluru",
+            "end_location": "bangalore",
             "start_date": [
                 datetime.datetime(2019, 2, 3),
                 # datetime.datetime(2019, 2, 2),

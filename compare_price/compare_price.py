@@ -162,66 +162,67 @@ if __name__ == "__main__":
         debug = False
 
     answers = get_input.get_input(debug)
-    try:
-        start_date = answers["start_date"]
-        if answers["return"]:
-            end_date = answers["end_date"]
-        else:
-            end_date = None
+    while(True):
+        try:
+            start_date = answers["start_date"]
+            if answers["return"]:
+                end_date = answers["end_date"]
+            else:
+                end_date = None
 
-        start_date_start_time = {}
-        start_date_end_time = {}
-        for date in answers["start_date_time"]:
-            start_date_start_time[str(date[0].date())] = date[0]
-            start_date_end_time[str(date[1].date())] = date[1]
-        if answers["return"]:
-            end_date_start_time = {}
-            end_date_end_time = {}
-            for date in answers["end_date_time"]:
-                end_date_start_time[str(date[0].date())] = date[0]
-                end_date_end_time[str(date[1].date())] = date[1]
-        else:
-            end_date_start_time, end_date_end_time = None, None
+            start_date_start_time = {}
+            start_date_end_time = {}
+            for date in answers["start_date_time"]:
+                start_date_start_time[str(date[0].date())] = date[0]
+                start_date_end_time[str(date[1].date())] = date[1]
+            if answers["return"]:
+                end_date_start_time = {}
+                end_date_end_time = {}
+                for date in answers["end_date_time"]:
+                    end_date_start_time[str(date[0].date())] = date[0]
+                    end_date_end_time[str(date[1].date())] = date[1]
+            else:
+                end_date_start_time, end_date_end_time = None, None
 
-        start_location = answers["start_location_code"]
-        end_location = answers["end_location_code"]
-
-
-        pprint(f"{start_date}, {end_date}, {start_date_start_time}, {start_date_end_time}, {start_location}, {end_location}")
-
-        price_obj = FindLowestPrice(start_date=start_date, end_date=end_date,
-                                    start_location=start_location, end_location=end_location,
-                                    start_date_start_time=start_date_start_time,
-                                    start_date_end_time=start_date_end_time, end_date_start_time=end_date_start_time,
-                                    end_date_end_time=end_date_end_time)
-
-        start_price_list, end_price_list = price_obj.find_flight_in_time_range()
-
-        # pprint(start_price_list[0:3])
+            start_location = answers["start_location_code"]
+            end_location = answers["end_location_code"]
 
 
-        def print_price(price_list):
-            for price in price_list:
-                pprint(f"Start time: {price['start_time']}  Duration: {price['duration']} "
-                       f" End Time: {price['end_time']}  Price: {price['price']} "
-                       f" Flight ID : {price['flight_id']}  Site: {price['site']}")
+            pprint(f"{start_date}, {end_date}, {start_date_start_time}, {start_date_end_time}, {start_location}, {end_location}")
+
+            price_obj = FindLowestPrice(start_date=start_date, end_date=end_date,
+                                        start_location=start_location, end_location=end_location,
+                                        start_date_start_time=start_date_start_time,
+                                        start_date_end_time=start_date_end_time, end_date_start_time=end_date_start_time,
+                                        end_date_end_time=end_date_end_time)
+
+            start_price_list, end_price_list = price_obj.find_flight_in_time_range()
+
+            # pprint(start_price_list[0:3])
 
 
-        pprint("Cheapest start price is -> ")
-        for day in start_price_list.keys():
-            pprint(f"Day - {day}"  )
-            print_price(start_price_list[day][0:5])
-        if end_price_list is not None:
-            pprint("*"*60)
-            for day in end_price_list.keys():
-                pprint(f"Day - {day}")
-                print_price(end_price_list[day][0:5])
-            # print_price(end_price_list[0:3])
-        print("help")
-    except Exception as e:
-        import traceback
-        pprint(os.path.dirname(os.path.realpath(__file__)))
-        pprint(traceback.format_exc())
-        raise e
+            def print_price(price_list):
+                for price in price_list:
+                    pprint(f"Start time: {price['start_time']}  Duration: {price['duration']} "
+                           f" End Time: {price['end_time']}  Price: {price['price']} "
+                           f" Flight ID : {price['flight_id']}  Site: {price['site']}")
+
+
+            pprint("Cheapest start price is -> ")
+            for day in start_price_list.keys():
+                pprint(f"Day - {day}"  )
+                print_price(start_price_list[day][0:5])
+            if end_price_list is not None:
+                pprint("*"*60)
+                for day in end_price_list.keys():
+                    pprint(f"Day - {day}")
+                    print_price(end_price_list[day][0:5])
+                # print_price(end_price_list[0:3])
+            print("help")
+        except Exception as e:
+            import traceback
+            pprint(os.path.dirname(os.path.realpath(__file__)))
+            pprint(traceback.format_exc())
+            raise e
         from time import sleep
-        sleep(200)
+        sleep(get_input.get_int(answers["notification_time"]) * 60)
