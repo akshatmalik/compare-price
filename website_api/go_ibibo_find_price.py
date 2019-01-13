@@ -3,6 +3,7 @@ import os
 import sys
 import sys
 sys.path.insert(0, r"C:\Users\Akshat Malik\PycharmProjects\find_cheapest_flight")
+
 file_dir = os.path.dirname(__file__)
 sys.path.append(file_dir)
 
@@ -18,6 +19,16 @@ from . import Website
 
 
 class GoIbibo(Website):
+    """
+    The ap returns the result in this format
+
+        # 'duration': '12h 35m',
+        # 'end_time': '00:45',
+        # 'flight_id': 'Jet Airways',
+        # 'price': 53660,
+        # 'site': 'goibibo',
+        # 'start_time': '22:50'
+    """
 
     def _format_date(self, start_date):
         date_str = f"{start_date.year}{start_date.month}{start_date.day}"
@@ -46,12 +57,7 @@ class GoIbibo(Website):
         return "GoIbibo"
 
     def _find_price(self, start_date, start_location, end_location):
-        # 'duration': '12h 35m',
-        # 'end_time': '00:45',
-        # 'flight_id': 'Jet Airways',
-        # 'price': 53660,
-        # 'site': 'goibibo',
-        # 'start_time': '22:50'
+
 
         start_date = self._format_date(start_date)
 
@@ -70,10 +76,12 @@ class GoIbibo(Website):
         )
 
         response = requests.get('http://developer.goibibo.com/api/search/', params=params)
-        # print(response.json())
+        print(response)
+        print(response.json()['data'])
         flight_data = response.json()['data']['onwardflights']
         go_ibibo = list()
 
+        # TODO: Time should be datetime
         for flight in flight_data:
             flight_id = flight['airline']
             start_time = flight['deptime']

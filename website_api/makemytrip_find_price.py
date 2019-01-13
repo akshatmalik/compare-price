@@ -6,11 +6,21 @@ import zipfile
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import helper_methods
+from website_api import helper_methods
 from . import Website
 
+import datetime
 
 class MakeMyTrip(Website):
+    """
+    The class gets the response in the form:
+        "duration': '12h 35m',
+        'end_time': '00:45',
+        'flight_id': 'Jet Airways',
+        'price': 53660,
+        'site': 'goibibo',
+        'start_time': '22:50'
+    """
 
     def _format_date(self, start_date):
         date_str = f"{start_date.day}-{start_date.month}-{start_date.year}"
@@ -23,8 +33,6 @@ class MakeMyTrip(Website):
         return time
 
     def _format_duration(self, time):
-        time[0] = time[0].replace("h", "")
-        time[1] = time[1].replace("m", "")
         return time
 
     def _format_flight_id(self, id):
@@ -57,19 +65,13 @@ class MakeMyTrip(Website):
         return "MakeMyTrip"
 
     def _find_price(self, start_date, start_location, end_location):
-        # 'duration': '12h 35m',
-        # 'end_time': '00:45',
-        # 'flight_id': 'Jet Airways',
-        # 'price': 53660,
-        # 'site': 'goibibo',
-        # 'start_time': '22:50'
+
         dir_path = os.path.dirname(os.path.realpath(__file__))
         dir_path = pathlib.Path(str(dir_path))
         print(f"{dir_path} in makemytrip")
         file_name = dir_path / "chrome_driver_download" / f"chromedriver.exe"
-        # file_name = f"chromedriver.exe"
 
-        start_date = self._format_date(start_date)
+        start_date_str = self._format_date(start_date)
 
         chrome_options = Options()
         chrome_options.add_argument("--headless")
@@ -77,7 +79,9 @@ class MakeMyTrip(Website):
         driver = webdriver.Chrome(executable_path= str(file_name), chrome_options=chrome_options)
         driver.get(
             f'https://flights.makemytrip.com/makemytrip//search/O/O/E/1/0/0/S/V0/{start_location}_{end_location}_'
-            f'{start_date}')
+            f'{start_date_str}')
+        from time import sleep
+        sleep(3)
         list_of_price = list()
         time = driver.find_elements_by_class_name("timeCa")
         price_list = driver.find_elements_by_class_name("price_info")
@@ -90,11 +94,21 @@ class MakeMyTrip(Website):
             duration = re.findall(r'\d+\w', time[3 * i + 2].get_attribute('innerHTML'))
             flight_id = BeautifulSoup(type_of_flight[i].get_attribute('innerHTML'), 'html.parser').span.contents
 
+            start_datetime = start_date
+            start_datetime = start_datetime.replace(hour=int(start_time[0]), minute=int(start_time[1]))
+
+            # hour, minute = duration.split(" ")
+            hour = int(duration[0].split("h")[0])
+            minute = int(duration[1].split("m")[0])
+            delta_time = datetime.timedelta(minutes= hour * 60 + minute)
+
+            end_datetime = start_datetime + delta_time
+
             list_of_price.append({
                 "price": price,
-                "start_time": start_time,
-                "end_time": end_time,
-                "duration": duration,
+                "start_time": start_datetime,
+                "end_time": end_datetime,
+                "duration": delta_time,
                 "flight_id": flight_id,
                 "site": self.website_name()
             })
