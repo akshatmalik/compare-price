@@ -1,6 +1,6 @@
 import datetime
 from pprint import pprint
-from typing import List, Dict
+from typing import Dict
 
 
 def get_date(date: str) -> (datetime, None):
@@ -58,6 +58,13 @@ def get_location_code(location: str, validate_location: bool = False) -> {str, N
         else:
             return False
     return df_loc.iloc[0]["Airport Code"]
+
+
+def get_int(number: str) -> {int, None}:
+    try:
+        return int(number)
+    except Exception as e:
+        return None
 
 
 def get_input(debug: bool) -> Dict:
@@ -315,9 +322,32 @@ def get_input(debug: bool) -> Dict:
             answers["start_location_code"] = get_location_code(answers["start_location"])
             answers["end_location_code"] = get_location_code(answers["end_location"])
 
+        questions_how_ofter_to_update = [
+            {
+                'type': 'input',
+                'name': 'notification_time',
+                'message': "How often do you want to be updated? (in minutes)",
+            },
+        ]
+        answers = prompt(questions_how_ofter_to_update, answers)
+        while get_int(answers["notification_time"]) is None:
+            answers = prompt(questions_how_ofter_to_update, answers)
+
+        questions_how_ofter_to_update = [
+            {
+                'type': 'input',
+                'name': 'notification_time',
+                'message': "How often do you want to be updated? (in minutes)",
+            },
+        ]
+        answers = prompt(questions_how_ofter_to_update, answers)
+        while get_int(answers["notification_time"]) is None:
+            answers = prompt(questions_how_ofter_to_update, answers)
+
     else:
 
         answers = {
+            "notification_time" : 60
             "start_location": "chandigarh",
             "end_location": "bengaluru",
             "start_date": [

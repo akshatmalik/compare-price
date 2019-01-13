@@ -210,12 +210,12 @@ if __name__ == "__main__":
         pprint("Cheapest start price is -> ")
         for day in start_price_list.keys():
             pprint(f"Day - {day}"  )
-            print_price(start_price_list[day][0:3])
+            print_price(start_price_list[day][0:5])
         if end_price_list is not None:
             pprint("*"*60)
             for day in end_price_list.keys():
                 pprint(f"Day - {day}")
-                print_price(end_price_list[day][0:3])
+                print_price(end_price_list[day][0:5])
             # print_price(end_price_list[0:3])
         print("help")
     except Exception as e:
