@@ -2,6 +2,7 @@ import datetime
 from pprint import pprint
 from typing import Dict
 
+print_answers = False
 
 def get_date(date: str) -> (datetime, None):
     """
@@ -15,10 +16,10 @@ def get_date(date: str) -> (datetime, None):
         entered_date = datetime.datetime(year=int(date_parts[0]), month=int(date_parts[1]),
                                          day=int(date_parts[2]))
         if entered_date <= datetime.datetime.today():
-            raise Exception("Falied compariosin")
+            raise Exception("Falied comparision")
         return entered_date
     except Exception as e:
-        pprint(e)
+        # pprint(e)
         return None
 
 
@@ -36,7 +37,7 @@ def get_time(time: str, date: datetime) -> datetime:
         start_date_time_start = start_date_time.replace(hour=int(time_parts_start[0]), minute=int(time_parts_start[1]))
         return start_date_time_start
     except Exception as e:
-        print(e)
+        # print(e)
         return None
 
 
@@ -89,7 +90,7 @@ def get_input(debug: bool) -> Dict:
         Frequency to check for price -- in minutes
         Email to send updates of the progress
         """
-        # TODO: Do the extra input and clean code
+
         questions_hi = [
             {
                 'type': 'input',
@@ -113,6 +114,9 @@ def get_input(debug: bool) -> Dict:
             answers = prompt(questions_start_location, answers)
         answers["start_location_code"] = get_location_code(answers["start_location"])
 
+        if print_answers:
+            pprint(answers)
+
         questions_end_location = [
             {
                 'type': 'input',
@@ -124,6 +128,9 @@ def get_input(debug: bool) -> Dict:
         while not get_location_code(answers["end_location"], True):
             answers = prompt(questions_end_location, answers)
         answers["end_location_code"] = get_location_code(answers["end_location"])
+
+        if print_answers:
+            pprint(answers)
 
         # RETURN JOURNEY
         questions_is_return_journey = [
@@ -150,6 +157,9 @@ def get_input(debug: bool) -> Dict:
         temp_date = [get_date(answers["start_date"])]
         answers["start_date"] = []
         answers["start_date"].extend(temp_date)
+
+        if print_answers:
+            pprint(answers)
 
         # START DATE TIME RANGE -- START
         questions_start_location_time_range_start = [
@@ -178,6 +188,9 @@ def get_input(debug: bool) -> Dict:
 
         while get_time(answers["start_date_time_range_end"], answers["start_date"][0]) is None:
             answers = prompt(questions_start_location_time_range_end, answers)
+
+        if print_answers:
+            pprint(answers)
 
         # MULTIPLE DATE RANGES
         questions_multiple_dates = [
@@ -219,6 +232,9 @@ def get_input(debug: bool) -> Dict:
                 answers = prompt(questions_do_you_want_to_enter_another_date, answers)
                 loop = answers["enter_another_date"]
 
+            if print_answers:
+                pprint(answers)
+
         # MAKE START DATE TIMES
         answers["start_date_time"] = []
         for date in answers["start_date"]:
@@ -226,6 +242,8 @@ def get_input(debug: bool) -> Dict:
             start_date_range = get_time(answers["start_date_time_range_start"], date)
             end_date_range = get_time(answers["start_date_time_range_end"], date)
             answers["start_date_time"].append((start_date_range, end_date_range))
+
+        if print_answers:
             pprint(answers)
 
         # RETURN JOURNEY THINGS NOW
@@ -246,6 +264,9 @@ def get_input(debug: bool) -> Dict:
             temp_date = [get_date(answers["end_date"])]
             answers["end_date"] = []
             answers["end_date"].extend(temp_date)
+
+            if print_answers:
+                pprint(answers)
 
             # END DATE -- START TIME
             questions_end_location_time_range_start = [
@@ -274,6 +295,9 @@ def get_input(debug: bool) -> Dict:
 
             while get_time(answers["end_date_time_range_end"], answers['end_date'][0]) is None:
                 answers = prompt(questions_start_location_time_range_end, answers)
+
+            if print_answers:
+                pprint(answers)
 
             # MULTIPLE DATES
             questions_multiple_dates = [
@@ -322,9 +346,13 @@ def get_input(debug: bool) -> Dict:
                 end_date_range = get_time(answers["end_date_time_range_end"], date)
                 answers["end_date_time"].append((start_date_range, end_date_range))
 
+            if print_answers:
+                pprint(answers)
+
             answers["start_location_code"] = get_location_code(answers["start_location"])
             answers["end_location_code"] = get_location_code(answers["end_location"])
 
+        # HOW OFTEN TO UPDATE
         questions_how_ofter_to_update = [
             {
                 'type': 'input',
@@ -336,20 +364,23 @@ def get_input(debug: bool) -> Dict:
         while get_int(answers["notification_time"]) is None:
             answers = prompt(questions_how_ofter_to_update, answers)
 
-        questions_how_ofter_to_update = [
+        if print_answers:
+            pprint(answers)
+
+        # EMAIL ID FOR UPDATE
+        questions_email_id_for_updates = [
             {
                 'type': 'input',
-                'name': 'notification_time',
-                'message': "How often do you want to be updated? (in minutes)",
+                'name': 'email_id',
+                'message': "We can send you updates. Can you share your email id?",
             },
         ]
-        answers = prompt(questions_how_ofter_to_update, answers)
-        while get_int(answers["notification_time"]) is None:
-            answers = prompt(questions_how_ofter_to_update, answers)
+        answers = prompt(questions_email_id_for_updates, answers)
 
     else:
         # print(get_location_code("bangalore"), True)
         answers = {
+            "email_id" : "akshat.ndun@gmail.com",
             "notification_time" : 60,
             "start_location": "chandigarh",
             "end_location": "bangalore",
