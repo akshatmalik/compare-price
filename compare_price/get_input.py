@@ -238,7 +238,6 @@ def get_input(debug: bool) -> Dict:
         # MAKE START DATE TIMES
         answers["start_date_time"] = []
         for date in answers["start_date"]:
-            pprint(date)
             start_date_range = get_time(answers["start_date_time_range_start"], date)
             end_date_range = get_time(answers["start_date_time_range_end"], date)
             answers["start_date_time"].append((start_date_range, end_date_range))
@@ -317,7 +316,7 @@ def get_input(debug: bool) -> Dict:
                     {
                         'type': 'input',
                         'name': 'end_date_append',
-                        'message': "Which day you want to book your flight? (follow this format please : YYYY/MM/DD) \n",
+                        'message': "Which day you want to book your flight? (follow this format please : YYYY/MM/DD)",
                     },
                 ]
 

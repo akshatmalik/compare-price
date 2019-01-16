@@ -152,7 +152,7 @@ import get_input
 
 if __name__ == "__main__":
     import logging
-    logger = logging.getLogger("compare_price")
+    logger = logging.getLogger(__name__)
     logger.setLevel(logging.ERROR)
 
     print(sys.argv)
