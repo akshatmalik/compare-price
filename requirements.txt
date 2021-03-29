@@ -43,7 +43,7 @@ pefile==2018.8.8
 pickleshare==0.7.5
 prometheus-client==0.4.2
 prompt-toolkit==1.0.14
-Pygments==2.2.0
+Pygments==2.7.4
 PyInquirer==1.0.2
 PyInstaller==3.4
 pyparsing==2.3.0
